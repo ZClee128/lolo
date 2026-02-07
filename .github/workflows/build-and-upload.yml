@@ -85,17 +85,26 @@ jobs:
         run: |
           cd lolo
           
+          echo "开始构建Archive..."
+          
           xcodebuild archive \
             -workspace lolo.xcworkspace \
             -scheme lolo \
             -configuration Release \
             -archivePath $RUNNER_TEMP/lolo.xcarchive \
             -destination 'generic/platform=iOS' \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}" \
-            | xcpretty || exit 1
+            -allowProvisioningUpdates \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}"
           
-          echo "✓ Archive创建成功"
+          # 验证archive是否创建成功
+          if [ -d "$RUNNER_TEMP/lolo.xcarchive" ]; then
+            echo "✓ Archive创建成功: $RUNNER_TEMP/lolo.xcarchive"
+            ls -lh "$RUNNER_TEMP/lolo.xcarchive"
+          else
+            echo "❌ Archive创建失败！"
+            exit 1
+          fi
       
       - name: 📤 导出IPA
         run: |
