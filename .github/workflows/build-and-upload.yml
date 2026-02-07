@@ -36,7 +36,6 @@ jobs:
       
       - name: 📦 安装CocoaPods依赖
         run: |
-          cd lolo
           pod install
       
       - name: 🧹 深度清理（避免任何残留信息）
@@ -48,7 +47,6 @@ jobs:
           rm -rf ~/Library/Developer/Xcode/DerivedData/*
           
           echo "清理build目录..."
-          cd lolo
           rm -rf build/
           
           echo "✓ 清理完成"
@@ -83,8 +81,6 @@ jobs:
       
       - name: 🏗️ 构建Archive（无设备关联）
         run: |
-          cd lolo
-          
           echo "开始构建Archive..."
           
           xcodebuild archive \
@@ -108,8 +104,6 @@ jobs:
       
       - name: 📤 导出IPA
         run: |
-          cd lolo
-          
           # 创建ExportOptions.plist
           cat > $RUNNER_TEMP/ExportOptions.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
