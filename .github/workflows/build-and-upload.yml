@@ -14,10 +14,7 @@ env:
   CONFIGURATION: "Release"
   XCODE_VERSION: "latest-stable"
   
-  # Archive和IPA路径（通常不需要修改）
-  ARCHIVE_PATH: "${{ runner.temp }}/app.xcarchive"
-  EXPORT_PATH: "${{ runner.temp }}/export"
-  EXPORT_OPTIONS_PATH: "${{ runner.temp }}/ExportOptions.plist"
+
 
 on:
   # 手动触发
@@ -52,6 +49,12 @@ jobs:
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
+      
+      - name: 📝 设定路径环境变量
+        run: |
+          echo "ARCHIVE_PATH=${{ runner.temp }}/app.xcarchive" >> $GITHUB_ENV
+          echo "EXPORT_PATH=${{ runner.temp }}/export" >> $GITHUB_ENV
+          echo "EXPORT_OPTIONS_PATH=${{ runner.temp }}/ExportOptions.plist" >> $GITHUB_ENV
       
       - name: 📦 安装CocoaPods依赖
         run: |
