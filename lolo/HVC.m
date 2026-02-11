@@ -13,7 +13,7 @@
 #import "Views/Home/PostDetailViewController.h"
 #import "Views/Home/CreatePostViewController.h"
 #import "Views/Home/ReportViewController.h"
-#import "Views/CoinStoreViewController.h"
+#import "Views/LoloWalletDetailView.h"
 #import "ViewModels/HomeViewModel.h"
 #import "DataService.h"
 
@@ -183,7 +183,7 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [alert addAction:[UIAlertAction actionWithTitle:@"Buy Coins" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            CoinStoreViewController *storeVC = [[CoinStoreViewController alloc] init];
+            LoloWalletDetailView *storeVC = [[LoloWalletDetailView alloc] init];
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
             [self presentViewController:nav animated:YES completion:nil];
         }]];

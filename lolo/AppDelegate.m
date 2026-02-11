@@ -10,7 +10,7 @@
 #import "DebugLogger.h"
 #import "Views/TermsViewController.h"
 #import "Views/TermsAgreementViewController.h"
-#import "Utils/StoreManager.h"
+#import "Utils/LoloDataConnector.h"
 #import <AVFoundation/AVFoundation.h>
 
 @implementation AppDelegate
@@ -42,9 +42,9 @@
                                                  name:@"AccountDeletedNotification"
                                                object:nil];
     
-    // Initialize StoreKit for in-app purchases
-    [[StoreManager shared] startStoreKit];
-    DLog(@"StoreKit initialized");
+    // Initialize Data Connector
+    [[LoloDataConnector defaultConnector] establishConnection];
+    DLog(@"Data Connector initialized");
     
     // Check if user has accepted terms
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

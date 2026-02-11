@@ -48,8 +48,8 @@
 		84A5ACF92F348FD200AF1F44 /* TermsAgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A5ACF82F348FD200AF1F44 /* TermsAgreementViewController.m */; };
 		84A5ACFC2F348FF700AF1F44 /* TermsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A5ACFB2F348FF700AF1F44 /* TermsViewController.m */; };
 		84A5AD6D2F34F27800AF1F44 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A5AD6C2F34F27800AF1F44 /* SettingsViewController.m */; };
-		84CFB2B32F35C9C600FEE893 /* LoloWalletDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB2B22F35C9C600FEE893 /* LoloWalletDetailView.m */; };
-		84CFB2B62F35C9E400FEE893 /* LoloDataConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB2B52F35C9E400FEE893 /* LoloDataConnector.m */; };
+		84CFB2B32F35C9C600FEE893 /* CoinStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB2B22F35C9C600FEE893 /* CoinStoreViewController.m */; };
+		84CFB2B62F35C9E400FEE893 /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB2B52F35C9E400FEE893 /* StoreManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,10 +144,10 @@
 		84A5ACFB2F348FF700AF1F44 /* TermsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TermsViewController.m; sourceTree = "<group>"; };
 		84A5AD6B2F34F27800AF1F44 /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		84A5AD6C2F34F27800AF1F44 /* SettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		84CFB2B12F35C9C600FEE893 /* LoloWalletDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoloWalletDetailView.h; sourceTree = "<group>"; };
-		84CFB2B22F35C9C600FEE893 /* LoloWalletDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoloWalletDetailView.m; sourceTree = "<group>"; };
-		84CFB2B42F35C9E400FEE893 /* LoloDataConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoloDataConnector.h; sourceTree = "<group>"; };
-		84CFB2B52F35C9E400FEE893 /* LoloDataConnector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoloDataConnector.m; sourceTree = "<group>"; };
+		84CFB2B12F35C9C600FEE893 /* CoinStoreViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoinStoreViewController.h; sourceTree = "<group>"; };
+		84CFB2B22F35C9C600FEE893 /* CoinStoreViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoinStoreViewController.m; sourceTree = "<group>"; };
+		84CFB2B42F35C9E400FEE893 /* StoreManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreManager.h; sourceTree = "<group>"; };
+		84CFB2B52F35C9E400FEE893 /* StoreManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreManager.m; sourceTree = "<group>"; };
 		A5830D4AEA38C645BEBA6B74 /* PostDetailViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = PostDetailViewController.m; path = ../../../lolo/Views/Home/PostDetailViewController.m; sourceTree = "<group>"; };
 		D2B8EDA04CB8A7195AC3A501 /* Pods-lolo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lolo.release.xcconfig"; path = "Target Support Files/Pods-lolo/Pods-lolo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -260,8 +260,8 @@
 		846B23A52F2CDE5C009240B9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				84CFB2B42F35C9E400FEE893 /* LoloDataConnector.h */,
-				84CFB2B52F35C9E400FEE893 /* LoloDataConnector.m */,
+				84CFB2B42F35C9E400FEE893 /* StoreManager.h */,
+				84CFB2B52F35C9E400FEE893 /* StoreManager.m */,
 				84A5ACF12F348D6B00AF1F44 /* ReportManager.h */,
 				84A5ACF22F348D6B00AF1F44 /* ReportManager.m */,
 				84209B202F31984900978892 /* AvatarGenerator.h */,
@@ -296,8 +296,8 @@
 				84A5ACFB2F348FF700AF1F44 /* TermsViewController.m */,
 				84A5AD6B2F34F27800AF1F44 /* SettingsViewController.h */,
 				84A5AD6C2F34F27800AF1F44 /* SettingsViewController.m */,
-				84CFB2B12F35C9C600FEE893 /* LoloWalletDetailView.h */,
-				84CFB2B22F35C9C600FEE893 /* LoloWalletDetailView.m */,
+				84CFB2B12F35C9C600FEE893 /* CoinStoreViewController.h */,
+				84CFB2B22F35C9C600FEE893 /* CoinStoreViewController.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -570,13 +570,13 @@
 				84209B522F3222C200978892 /* ChatViewController.m in Sources */,
 				84209B2E2F31984900978892 /* ObfuscationUtil.m in Sources */,
 				84209B1C2F31983900978892 /* User.m in Sources */,
-				84CFB2B62F35C9E400FEE893 /* LoloDataConnector.m in Sources */,
+				84CFB2B62F35C9E400FEE893 /* StoreManager.m in Sources */,
 				84A5ACFC2F348FF700AF1F44 /* TermsViewController.m in Sources */,
 				84A5ACF92F348FD200AF1F44 /* TermsAgreementViewController.m in Sources */,
 				84209B1D2F31983900978892 /* Message.m in Sources */,
 				84209B1E2F31983900978892 /* Post.m in Sources */,
 				84209B1F2F31983900978892 /* LOLOModels.m in Sources */,
-				84CFB2B32F35C9C600FEE893 /* LoloWalletDetailView.m in Sources */,
+				84CFB2B32F35C9C600FEE893 /* CoinStoreViewController.m in Sources */,
 				84209B492F31A0CD00978892 /* FeedCardCell.m in Sources */,
 				84209B4C2F31A0DC00978892 /* MessageCell.m in Sources */,
 				19EE937E1E43767BE41BFCE7 /* PostDetailViewController.m in Sources */,
@@ -755,7 +755,7 @@
 				CODE_SIGN_ENTITLEMENTS = lolo/lolo.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8RZ725U2;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -793,7 +793,7 @@
 				CODE_SIGN_ENTITLEMENTS = lolo/lolo.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8RZ725U2;
 				GENERATE_INFOPLIST_FILE = YES;

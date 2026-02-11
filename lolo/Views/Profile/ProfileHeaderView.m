@@ -10,7 +10,7 @@
 #import "Constants.h"
 #import "ImageLoader.h"
 #import "DataService.h"
-#import "CoinStoreViewController.h"
+#import "LoloWalletDetailView.h"
 
 @interface ProfileHeaderView ()
 @property (nonatomic, strong) UIImageView *avatarImageView;
@@ -334,7 +334,7 @@
 
 - (void)buyCoinsButtonTapped {
     if (self.parentViewController) {
-        CoinStoreViewController *storeVC = [[CoinStoreViewController alloc] init];
+        LoloWalletDetailView *storeVC = [[LoloWalletDetailView alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
         [self.parentViewController presentViewController:nav animated:YES completion:nil];
     }

@@ -11,7 +11,7 @@
 #import "Post.h"
 #import "User.h" 
 #import "DataService.h"
-#import "CoinStoreViewController.h"
+#import "LoloWalletDetailView.h"
 #import <PhotosUI/PhotosUI.h>
 
 #define COINS_PER_POST 0  // Posting is now FREE - coins used for other features
@@ -440,7 +440,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Buy Coins" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        CoinStoreViewController *storeVC = [[CoinStoreViewController alloc] init];
+        LoloWalletDetailView *storeVC = [[LoloWalletDetailView alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
         [self presentViewController:nav animated:YES completion:nil];
     }]];

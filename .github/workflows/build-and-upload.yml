@@ -1,5 +1,24 @@
 name: Build and Upload to App Store
 
+# ========================================
+# 项目配置 - 修改这里适配不同项目
+# ========================================
+env:
+  # 项目配置
+  WORKSPACE_NAME: "lolo.xcworkspace"
+  SCHEME_NAME: "lolo"
+  BUNDLE_ID: "com.lolo.lo"
+  PROVISIONING_PROFILE_NAME: "lolo"
+  
+  # 构建配置
+  CONFIGURATION: "Release"
+  XCODE_VERSION: "latest-stable"
+  
+  # Archive和IPA路径（通常不需要修改）
+  ARCHIVE_PATH: "${{ runner.temp }}/app.xcarchive"
+  EXPORT_PATH: "${{ runner.temp }}/export"
+  EXPORT_OPTIONS_PATH: "${{ runner.temp }}/ExportOptions.plist"
+
 on:
   # 手动触发
   workflow_dispatch:
@@ -32,7 +51,7 @@ jobs:
       - name: 🔧 设置Xcode版本
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: ${{ env.XCODE_VERSION }}
       
       - name: 📦 安装CocoaPods依赖
         run: |
@@ -84,19 +103,19 @@ jobs:
           echo "开始构建Archive..."
           
           xcodebuild archive \
-            -workspace lolo.xcworkspace \
-            -scheme lolo \
-            -configuration Release \
-            -archivePath $RUNNER_TEMP/lolo.xcarchive \
+            -workspace ${{ env.WORKSPACE_NAME }} \
+            -scheme ${{ env.SCHEME_NAME }} \
+            -configuration ${{ env.CONFIGURATION }} \
+            -archivePath ${{ env.ARCHIVE_PATH }} \
             -destination 'generic/platform=iOS' \
             -allowProvisioningUpdates \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}"
           
           # 验证archive是否创建成功
-          if [ -d "$RUNNER_TEMP/lolo.xcarchive" ]; then
-            echo "✓ Archive创建成功: $RUNNER_TEMP/lolo.xcarchive"
-            ls -lh "$RUNNER_TEMP/lolo.xcarchive"
+          if [ -d "${{ env.ARCHIVE_PATH }}" ]; then
+            echo "✓ Archive创建成功: ${{ env.ARCHIVE_PATH }}"
+            ls -lh "${{ env.ARCHIVE_PATH }}"
           else
             echo "❌ Archive创建失败！"
             exit 1
@@ -105,7 +124,7 @@ jobs:
       - name: 📤 导出IPA
         run: |
           # 创建ExportOptions.plist
-          cat > $RUNNER_TEMP/ExportOptions.plist <<EOF
+          cat > ${{ env.EXPORT_OPTIONS_PATH }} <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -124,8 +143,8 @@ jobs:
               <string>${{ secrets.TEAM_ID }}</string>
               <key>provisioningProfiles</key>
               <dict>
-                  <key>com.lolo.lo</key>
-                  <string>lolo</string>
+                  <key>${{ env.BUNDLE_ID }}</key>
+                  <string>${{ env.PROVISIONING_PROFILE_NAME }}</string>
               </dict>
               <key>signingCertificate</key>
               <string>Apple Distribution</string>
@@ -136,12 +155,12 @@ jobs:
           EOF
           
           xcodebuild -exportArchive \
-            -archivePath $RUNNER_TEMP/lolo.xcarchive \
-            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
-            -exportPath $RUNNER_TEMP/export
+            -archivePath ${{ env.ARCHIVE_PATH }} \
+            -exportOptionsPlist ${{ env.EXPORT_OPTIONS_PATH }} \
+            -exportPath ${{ env.EXPORT_PATH }}
           
           echo "✓ IPA导出成功"
-          ls -lh $RUNNER_TEMP/export/*.ipa
+          ls -lh ${{ env.EXPORT_PATH }}/*.ipa
       
       - name: ✅ 验证IPA清洁度
         run: |
@@ -166,7 +185,7 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APP_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
         run: |
-          IPA_FILE=$(find $RUNNER_TEMP/export -name "*.ipa" -type f | head -1)
+          IPA_FILE=$(find ${{ env.EXPORT_PATH }} -name "*.ipa" -type f | head -1)
           
           echo "上传IPA到App Store Connect..."
           xcrun altool --upload-app \
@@ -182,7 +201,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lolo-ipa
-          path: ${{ runner.temp }}/export/*.ipa
+          path: ${{ env.EXPORT_PATH }}/*.ipa
           retention-days: 7
       
       - name: 🧹 清理临时文件

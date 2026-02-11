@@ -351,25 +351,28 @@
     NSMutableArray *postsData = [NSMutableArray array];
     
     for (Post *post in self.userPosts) {
-        NSDictionary *postDict = @{
-            @"postId": post.postId ?: @"",
-            @"userId": post.user.userId ?: @"",
-            @"username": post.user.username ?: @"",
-            @"avatar": post.user.avatar ?: @"",
-            @"sportType": post.sportType ?: @"",
-            @"content": post.content ?: @"",
-            @"images": post.images ?: @[],
-            @"videoUrl": post.videoUrl ?: @"",
-            @"distance": post.distance ?: @0,
-            @"duration": post.duration ?: @0,
-            @"calories": post.calories ?: @0,
-            @"likesCount": @(post.likesCount),
-            @"commentsCount": @(post.commentsCount),
-            @"timestamp": post.timestamp ?: [NSDate date],
-            @"location": post.location ?: @"",
-            @"isPinned": @(post.isPinned),
-            @"pinnedUntil": post.pinnedUntil ?: [NSNull null]
-        };
+        NSMutableDictionary *postDict = [NSMutableDictionary dictionary];
+        postDict[@"postId"] = post.postId ?: @"";
+        postDict[@"userId"] = post.user.userId ?: @"";
+        postDict[@"username"] = post.user.username ?: @"";
+        postDict[@"avatar"] = post.user.avatar ?: @"";
+        postDict[@"sportType"] = post.sportType ?: @"";
+        postDict[@"content"] = post.content ?: @"";
+        postDict[@"images"] = post.images ?: @[];
+        postDict[@"videoUrl"] = post.videoUrl ?: @"";
+        postDict[@"distance"] = post.distance ?: @0;
+        postDict[@"duration"] = post.duration ?: @0;
+        postDict[@"calories"] = post.calories ?: @0;
+        postDict[@"likesCount"] = @(post.likesCount);
+        postDict[@"commentsCount"] = @(post.commentsCount);
+        postDict[@"timestamp"] = post.timestamp ?: [NSDate date];
+        postDict[@"location"] = post.location ?: @"";
+        postDict[@"isPinned"] = @(post.isPinned);
+        
+        if (post.pinnedUntil) {
+            postDict[@"pinnedUntil"] = post.pinnedUntil;
+        }
+        
         [postsData addObject:postDict];
     }
     
