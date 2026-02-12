@@ -60,20 +60,23 @@ jobs:
         run: |
           pod install
       
-      - name: 🎭 注入代码混淆（改变二进制签名）
+      - name: 🎭 二进制签名混淆（改变构建指纹）
         run: |
-          echo "Generating unique junk code for build..."
+          echo "Injecting unique build signature..."
           
-          # Install xcodeproj gem if needed
-          gem list xcodeproj -i || gem install xcodeproj
+          BUILD_TIMESTAMP=$(date +%s)
+          BUILD_UUID=$(uuidgen)
           
-          # Generate junk code files
-          ruby inject_junk_code.rb
+          # 在AppDelegate.m末尾添加唯一的编译时注释
+          # 这会改变二进制签名但不影响功能
+          cat >> lolo/AppDelegate.m <<EOF
           
-          # Add junk files to Xcode project
-          ruby add_junk_to_xcode.rb
+          // Build Signature: ${BUILD_TIMESTAMP}-${BUILD_UUID}
+          // This comment changes with each build to ensure unique binary
+          static const char* _buildSignature_${BUILD_TIMESTAMP} __attribute__((used)) = "${BUILD_UUID}";
+          EOF
           
-          echo "✓ Code obfuscation injected"
+          echo "✓ Unique build signature injected: ${BUILD_TIMESTAMP}-${BUILD_UUID}"
       
       - name: 🧹 深度清理（避免任何残留信息）
         run: |
