@@ -6,10 +6,12 @@
 //
 
 #import "DataService.h"
-#import "User.h"
 #import "Post.h"
-#import "LOLOModels.h"
+#import "User.h"
+#import "ReportManager.h"
+#import "StringObfuscation.h"
 #import "ObfuscationUtil.h"
+#import "LOLOModels.h"
 
 @interface DataService ()
 // Messages storage: key = userId, value = NSMutableArray of messages
@@ -31,7 +33,7 @@
         
         // Only setup mock messages if this is NOT a new account
         // New accounts should start with zero messages
-        NSString *userId = [[NSUserDefaults standardUserDefaults] stringForKey:@"CurrentUserId"];
+        NSString *userId = [[NSUserDefaults standardUserDefaults] stringForKey:[StringObfuscation userDefaultsKeyCurrentUserId]];
         if (userId != nil) {
             // Existing account - load mock messages for demo purposes
             [self setupInitialMessages];
@@ -123,7 +125,7 @@
 
 - (User *)getCurrentUser {
     // Check if we have a stored user ID
-    NSString *userId = [[NSUserDefaults standardUserDefaults] stringForKey:@"CurrentUserId"];
+    NSString *userId = [[NSUserDefaults standardUserDefaults] stringForKey:[StringObfuscation userDefaultsKeyCurrentUserId]];
     
     // If no user ID exists, this is a brand new account
     if (!userId) {
@@ -139,7 +141,7 @@
         
         // Generate unique avatar URL based on username
         NSString *avatarSeed = [username stringByReplacingOccurrencesOfString:@" " withString:@""];
-        NSString *avatar = [NSString stringWithFormat:@"https://i.pravatar.cc/150?u=%@", avatarSeed];
+        NSString *avatar = [NSString stringWithFormat:@"%@%@", [StringObfuscation avatarBaseURL], avatarSeed];
         
         // Default bio
         NSString *bio = @"Fitness enthusiast 💪";
@@ -154,7 +156,7 @@
         
         // Save everything to UserDefaults
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:userId forKey:@"CurrentUserId"];
+        [defaults setObject:userId forKey:[StringObfuscation userDefaultsKeyCurrentUserId]];
         [defaults setObject:username forKey:@"CurrentUsername"];
         [defaults setObject:avatar forKey:@"CurrentAvatar"];
         [defaults setObject:bio forKey:@"CurrentBio"];
@@ -198,15 +200,15 @@
 - (NSArray<User *> *)getUsers {
     NSMutableArray<User *> *users = [NSMutableArray array];
     
-    [users addObject:[[User alloc] initWithId:@"1" username:@"Sarah Johnson" avatar:@"https://i.pravatar.cc/150?u=1" bio:@"Running coach | 5 marathons completed 🏃‍♀️" followersCount:2145 followingCount:324 totalDistance:3200.5 totalCalories:180500 totalWorkouts:420 coinsBalance:0]];
+    [users addObject:[[User alloc] initWithId:@"1" username:@"Sarah Johnson" avatar:[NSString stringWithFormat:@"%@%@", [StringObfuscation avatarBaseURL], @"1"] bio:@"Running coach | 5 marathons completed 🏃‍♀️" followersCount:2145 followingCount:324 totalDistance:3200.5 totalCalories:180500 totalWorkouts:420 coinsBalance:0]];
     
-    [users addObject:[[User alloc] initWithId:@"2" username:@"Mike Chen" avatar:@"https://i.pravatar.cc/150?u=2" bio:@"Cyclist | Mountain biker | Weekend warrior 🚴" followersCount:1856 followingCount:412 totalDistance:8450.3 totalCalories:425000 totalWorkouts:315 coinsBalance:0]];
+    [users addObject:[[User alloc] initWithId:@"2" username:@"Mike Chen" avatar:[NSString stringWithFormat:@"%@%@", [StringObfuscation avatarBaseURL], @"2"] bio:@"Cyclist | Mountain biker | Weekend warrior 🚴" followersCount:1856 followingCount:412 totalDistance:8450.3 totalCalories:425000 totalWorkouts:315 coinsBalance:0]];
     
-    [users addObject:[[User alloc] initWithId:@"3" username:@"Emma Davis" avatar:@"https://i.pravatar.cc/150?u=3" bio:@"Yoga instructor | Mindfulness advocate 🧘‍♀️" followersCount:3421 followingCount:198 totalDistance:125.8 totalCalories:89200 totalWorkouts:628 coinsBalance:0]];
+    [users addObject:[[User alloc] initWithId:@"3" username:@"Emma Davis" avatar:[NSString stringWithFormat:@"%@%@", [StringObfuscation avatarBaseURL], @"3"] bio:@"Yoga instructor | Mindfulness advocate 🧘‍♀️" followersCount:3421 followingCount:198 totalDistance:125.8 totalCalories:89200 totalWorkouts:628 coinsBalance:0]];
     
-    [users addObject:[[User alloc] initWithId:@"4" username:@"James Wilson" avatar:@"https://i.pravatar.cc/150?u=4" bio:@"Basketball player | Team captain | Hoops life 🏀" followersCount:987 followingCount:645 totalDistance:450.2 totalCalories:125600 totalWorkouts:245 coinsBalance:0]];
+    [users addObject:[[User alloc] initWithId:@"4" username:@"James Wilson" avatar:[NSString stringWithFormat:@"%@%@", [StringObfuscation avatarBaseURL], @"4"] bio:@"Basketball player | Team captain | Hoops life 🏀" followersCount:987 followingCount:645 totalDistance:450.2 totalCalories:125600 totalWorkouts:245 coinsBalance:0]];
     
-    [users addObject:[[User alloc] initWithId:@"5" username:@"Lisa Martinez" avatar:@"https://i.pravatar.cc/150?u=5" bio:@"Swimmer | Triathlete in training | Water is life 🏊‍♀️" followersCount:1654 followingCount:289 totalDistance:1247.6 totalCalories:156800 totalWorkouts:398 coinsBalance:0]];
+    [users addObject:[[User alloc] initWithId:@"5" username:@"Lisa Martinez" avatar:[NSString stringWithFormat:@"%@%@", [StringObfuscation avatarBaseURL], @"5"] bio:@"Swimmer | Triathlete in training | Water is life 🏊‍♀️" followersCount:1654 followingCount:289 totalDistance:1247.6 totalCalories:156800 totalWorkouts:398 coinsBalance:0]];
     
     return users;
 }
@@ -222,20 +224,20 @@
     [posts addObjectsFromArray:self.userPosts];
     
     // First two posts MUST be videos - using mock users, NOT current user
-    [posts addObject:[[Post alloc] initWithId:@"v1" user:users[0] sportType:@"Cycling" content:@"Check out my new cycling route! 🚴‍♂️ The weather was perfect and I managed to capture some great moments." images:@[@"https://picsum.photos/400/300?random=1"] videoUrl:@"x0p4m1.mp4" distance:@25.5 duration:@90 calories:@650 likesCount:43 commentsCount:5 timestamp:[now dateByAddingTimeInterval:-300] location:@"Lolo Park"]];
+    [posts addObject:[[Post alloc] initWithId:@"v1" user:users[0] sportType:@"Cycling" content:@"Check out my new cycling route! 🚴‍♂️ The weather was perfect and I managed to capture some great moments." images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 1]] videoUrl:@"x0p4m1.mp4" distance:@25.5 duration:@90 calories:@650 likesCount:43 commentsCount:5 timestamp:[now dateByAddingTimeInterval:-300] location:@"Lolo Park"]];
     
-    [posts addObject:[[Post alloc] initWithId:@"v2" user:users[1] sportType:@"Running" content:@"Morning trail run through the forest! 🏃‍♀️ Beautiful sunrise views today." images:@[@"https://picsum.photos/400/300?random=2"] videoUrl:@"v8n2m9.mp4" distance:@8.2 duration:@45 calories:@520 likesCount:67 commentsCount:8 timestamp:[now dateByAddingTimeInterval:-600] location:@"Forest Trail"]];
+    [posts addObject:[[Post alloc] initWithId:@"v2" user:users[1] sportType:@"Running" content:@"Morning trail run through the forest! 🏃‍♀️ Beautiful sunrise views today." images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 2]] videoUrl:@"v8n2m9.mp4" distance:@8.2 duration:@45 calories:@520 likesCount:67 commentsCount:8 timestamp:[now dateByAddingTimeInterval:-600] location:@"Forest Trail"]];
     
     // More diverse posts with different users and content
-    [posts addObject:[[Post alloc] initWithId:@"3" user:users[2] sportType:@"Swimming" content:@"Finally hit my 1000m freestyle goal! 🏊‍♂️ Practice makes perfect." images:@[@"https://picsum.photos/400/300?random=3"] videoUrl:nil distance:@1.0 duration:@25 calories:@280 likesCount:52 commentsCount:12 timestamp:[now dateByAddingTimeInterval:-1800] location:@"Olympic Pool"]];
+    [posts addObject:[[Post alloc] initWithId:@"3" user:users[2] sportType:@"Swimming" content:@"Finally hit my 1000m freestyle goal! 🏊‍♂️ Practice makes perfect." images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 3]] videoUrl:nil distance:@1.0 duration:@25 calories:@280 likesCount:52 commentsCount:12 timestamp:[now dateByAddingTimeInterval:-1800] location:@"Olympic Pool"]];
     
-    [posts addObject:[[Post alloc] initWithId:@"4" user:users[3] sportType:@"Yoga" content:@"Sunday morning yoga session 🧘‍♂️ Feeling refreshed and centered." images:@[@"https://picsum.photos/400/300?random=4"] videoUrl:nil distance:@0 duration:@60 calories:@180 likesCount:38 commentsCount:4 timestamp:[now dateByAddingTimeInterval:-3600] location:@"Sunset Studio"]];
+    [posts addObject:[[Post alloc] initWithId:@"4" user:users[3] sportType:@"Yoga" content:@"Sunday morning yoga session 🧘‍♂️ Feeling refreshed and centered." images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 4]] videoUrl:nil distance:@0 duration:@60 calories:@180 likesCount:38 commentsCount:4 timestamp:[now dateByAddingTimeInterval:-3600] location:@"Sunset Studio"]];
     
-    [posts addObject:[[Post alloc] initWithId:@"5" user:users[4] sportType:@"Basketball" content:@"Epic game today! 🏀 We won 98-92 in overtime. Team effort!" images:@[@"https://picsum.photos/400/300?random=5"] videoUrl:nil distance:@2.5 duration:@105 calories:@680 likesCount:94 commentsCount:18 timestamp:[now dateByAddingTimeInterval:-7200] location:@"Downtown Court"]];
+    [posts addObject:[[Post alloc] initWithId:@"5" user:users[4] sportType:@"Basketball" content:@"Epic game today! 🏀 We won 98-92 in overtime. Team effort!" images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 5]] videoUrl:nil distance:@2.5 duration:@105 calories:@680 likesCount:94 commentsCount:18 timestamp:[now dateByAddingTimeInterval:-7200] location:@"Downtown Court"]];
     
-    [posts addObject:[[Post alloc] initWithId:@"6" user:users[0] sportType:@"Hiking" content:@"Weekend mountain adventure 🏔️ The view from the summit was absolutely worth it!" images:@[@"https://picsum.photos/400/300?random=6"] videoUrl:nil distance:@12.3 duration:@210 calories:@890 likesCount:128 commentsCount:23 timestamp:[now dateByAddingTimeInterval:-14400] location:@"Eagle Peak"]];
+    [posts addObject:[[Post alloc] initWithId:@"6" user:users[0] sportType:@"Hiking" content:@"Weekend mountain adventure 🏔️ The view from the summit was absolutely worth it!" images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 6]] videoUrl:nil distance:@12.3 duration:@210 calories:@890 likesCount:128 commentsCount:23 timestamp:[now dateByAddingTimeInterval:-14400] location:@"Eagle Peak"]];
     
-    [posts addObject:[[Post alloc] initWithId:@"7" user:users[1] sportType:@"Tennis" content:@"Great match with my doubles partner! 🎾 Won 6-4, 7-5." images:@[@"https://picsum.photos/400/300?random=7"] videoUrl:nil distance:@4.2 duration:@90 calories:@450 likesCount:61 commentsCount:9 timestamp:[now dateByAddingTimeInterval:-21600] location:@"City Tennis Club"]];
+    [posts addObject:[[Post alloc] initWithId:@"7" user:users[1] sportType:@"Tennis" content:@"Great match with my doubles partner! 🎾 Won 6-4, 7-5." images:@[[NSString stringWithFormat:@"%@400/300?random=%d", [StringObfuscation placeholderImageBaseURL], 7]] videoUrl:nil distance:@4.2 duration:@90 calories:@450 likesCount:61 commentsCount:9 timestamp:[now dateByAddingTimeInterval:-21600] location:@"City Tennis Club"]];
     
     return posts;
 }
@@ -376,12 +378,12 @@
         [postsData addObject:postDict];
     }
     
-    [[NSUserDefaults standardUserDefaults] setObject:postsData forKey:@"UserCreatedPosts"];
+    [[NSUserDefaults standardUserDefaults] setObject:postsData forKey:[StringObfuscation userDefaultsKeyUserCreatedPosts]];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)loadUserPosts {
-    NSArray *postsData = [[NSUserDefaults standardUserDefaults] arrayForKey:@"UserCreatedPosts"];
+    NSArray *postsData = [[NSUserDefaults standardUserDefaults] arrayForKey:[StringObfuscation userDefaultsKeyUserCreatedPosts]];
     
     if (postsData) {
         for (NSDictionary *postDict in postsData) {
@@ -437,7 +439,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     // User identity
-    [defaults removeObjectForKey:@"CurrentUserId"];
+    [defaults removeObjectForKey:[StringObfuscation userDefaultsKeyCurrentUserId]];
     [defaults removeObjectForKey:@"CurrentUsername"];
     [defaults removeObjectForKey:@"CurrentAvatar"];
     [defaults removeObjectForKey:@"CurrentBio"];
@@ -451,11 +453,11 @@
     [defaults removeObjectForKey:@"CurrentCoins"];
     
     // User content
-    [defaults removeObjectForKey:@"UserCreatedPosts"];
-    [defaults removeObjectForKey:@"HasAgreedToTerms"];
+    [defaults removeObjectForKey:[StringObfuscation userDefaultsKeyUserCreatedPosts]];
+    [defaults removeObjectForKey:[StringObfuscation userDefaultsKeyHasAgreedToTerms]];
     
     // Other app data
-    [defaults removeObjectForKey:@"BlockedUsers"];
+    [defaults removeObjectForKey:[StringObfuscation userDefaultsKeyBlockedUsers]];
     [defaults removeObjectForKey:@"SavedPosts"];
     [defaults removeObjectForKey:@"hasAcceptedTerms"]; // Legacy key
     
@@ -464,7 +466,7 @@
     NSLog(@"[DataService] Account deleted - all user data cleared");
     
     // Post notification to reset app
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"AccountDeletedNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameAccountDeleted] object:nil];
 }
 
 #pragma mark - Coins Management
@@ -490,7 +492,7 @@
     NSLog(@"[DataService] Added %ld coins. New balance: %ld", (long)amount, (long)newBalance);
     
     // Post notification for UI updates
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CoinsBalanceDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameCoinsBalanceChanged] object:nil];
     
     return YES;
 }
@@ -516,7 +518,7 @@
     NSLog(@"[DataService] Deducted %ld coins. New balance: %ld", (long)amount, (long)newBalance);
     
     // Post notification for UI updates
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CoinsBalanceDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameCoinsBalanceChanged] object:nil];
     
     return YES;
 }

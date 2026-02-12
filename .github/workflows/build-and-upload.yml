@@ -60,6 +60,21 @@ jobs:
         run: |
           pod install
       
+      - name: 🎭 注入代码混淆（改变二进制签名）
+        run: |
+          echo "Generating unique junk code for build..."
+          
+          # Install xcodeproj gem if needed
+          gem list xcodeproj -i || gem install xcodeproj
+          
+          # Generate junk code files
+          ruby inject_junk_code.rb
+          
+          # Add junk files to Xcode project
+          ruby add_junk_to_xcode.rb
+          
+          echo "✓ Code obfuscation injected"
+      
       - name: 🧹 深度清理（避免任何残留信息）
         run: |
           echo "清理xcuserdata..."

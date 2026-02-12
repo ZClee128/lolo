@@ -13,6 +13,7 @@
 #import "DataService.h"
 #import "LoloWalletDetailView.h"
 #import <PhotosUI/PhotosUI.h>
+#import "StringObfuscation.h"
 
 #define COINS_PER_POST 0  // Posting is now FREE - coins used for other features
 
@@ -68,7 +69,7 @@
     // Listen for coins balance changes
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateCoinsLabel)
-                                                 name:@"CoinsBalanceDidChangeNotification"
+                                                 name:[StringObfuscation notificationNameCoinsBalanceChanged]
                                                object:nil];
     
     // Keyboard observation
@@ -355,7 +356,7 @@
                                         user:currentUser
                                    sportType:sportType
                                      content:content
-                                      images:savedImagePath ? @[savedImagePath] : @[@"https://picsum.photos/400/300?random=999"]
+                                      images:savedImagePath ? @[savedImagePath] : @[@"placeholder.jpg" /* Using local asset instead of external URL */]
                                     videoUrl:nil
                                     distance:distance
                                     duration:duration

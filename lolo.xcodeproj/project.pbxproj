@@ -48,6 +48,7 @@
 		84A5ACF92F348FD200AF1F44 /* TermsAgreementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A5ACF82F348FD200AF1F44 /* TermsAgreementViewController.m */; };
 		84A5ACFC2F348FF700AF1F44 /* TermsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A5ACFB2F348FF700AF1F44 /* TermsViewController.m */; };
 		84A5AD6D2F34F27800AF1F44 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A5AD6C2F34F27800AF1F44 /* SettingsViewController.m */; };
+		84C2A6E02F3E1A7600EB2D03 /* StringObfuscation.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C2A6DF2F3E1A7600EB2D03 /* StringObfuscation.m */; };
 		84CFB2B32F35C9C600FEE893 /* LoloWalletDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB2B22F35C9C600FEE893 /* LoloWalletDetailView.m */; };
 		84CFB2B62F35C9E400FEE893 /* LoloDataConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB2B52F35C9E400FEE893 /* LoloDataConnector.m */; };
 /* End PBXBuildFile section */
@@ -144,6 +145,8 @@
 		84A5ACFB2F348FF700AF1F44 /* TermsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TermsViewController.m; sourceTree = "<group>"; };
 		84A5AD6B2F34F27800AF1F44 /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		84A5AD6C2F34F27800AF1F44 /* SettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		84C2A6DE2F3E1A7600EB2D03 /* StringObfuscation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringObfuscation.h; sourceTree = "<group>"; };
+		84C2A6DF2F3E1A7600EB2D03 /* StringObfuscation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StringObfuscation.m; sourceTree = "<group>"; };
 		84CFB2B12F35C9C600FEE893 /* LoloWalletDetailView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoloWalletDetailView.h; sourceTree = "<group>"; };
 		84CFB2B22F35C9C600FEE893 /* LoloWalletDetailView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoloWalletDetailView.m; sourceTree = "<group>"; };
 		84CFB2B42F35C9E400FEE893 /* LoloDataConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoloDataConnector.h; sourceTree = "<group>"; };
@@ -277,6 +280,8 @@
 				6CB05C2F083544F3AEA06504 /* DataService.h */,
 				2497C00DC052931D74D39CC4 /* DataService.m */,
 				0591E3B1574DF079F7205504 /* DebugLogger.h */,
+				84C2A6DE2F3E1A7600EB2D03 /* StringObfuscation.h */,
+				84C2A6DF2F3E1A7600EB2D03 /* StringObfuscation.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -559,6 +564,7 @@
 				84209B382F31987600978892 /* HVC.m in Sources */,
 				84209B392F31987600978892 /* MVC.m in Sources */,
 				84209B3A2F31987600978892 /* AppDelegate.m in Sources */,
+				84C2A6E02F3E1A7600EB2D03 /* StringObfuscation.m in Sources */,
 				84A5ACF32F348D6B00AF1F44 /* ReportManager.m in Sources */,
 				84209B3B2F31987600978892 /* main.m in Sources */,
 				84209B3C2F31987600978892 /* MainTabBarController.m in Sources */,
@@ -755,7 +761,7 @@
 				CODE_SIGN_ENTITLEMENTS = lolo/lolo.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8RZ725U2;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -793,7 +799,7 @@
 				CODE_SIGN_ENTITLEMENTS = lolo/lolo.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2A8RZ725U2;
 				GENERATE_INFOPLIST_FILE = YES;

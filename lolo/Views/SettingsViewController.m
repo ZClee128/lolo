@@ -6,8 +6,10 @@
 //
 
 #import "SettingsViewController.h"
-#import "Constants.h"
 #import "DataService.h"
+#import "Constants.h"
+#import "User.h"
+#import "StringObfuscation.h"
 
 @interface SettingsViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
@@ -115,7 +117,7 @@
     // Dismiss settings
     [self dismissViewControllerAnimated:YES completion:^{
         // Notify app delegate to reset to terms screen
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"AccountDeletedNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameAccountDeleted] object:nil];
     }];
 }
 

@@ -8,6 +8,7 @@
 #import "TermsAgreementViewController.h"
 #import "TermsViewController.h"
 #import "Constants.h"
+#import "StringObfuscation.h"
 
 @interface TermsAgreementViewController ()
 @property (nonatomic, strong) UIButton *agreeButton;
@@ -198,12 +199,12 @@
 
 - (void)agreeTapped {
     // Save agreement to UserDefaults
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasAgreedToTerms"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:[StringObfuscation userDefaultsKeyHasAgreedToTerms]];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     // Dismiss and let app continue to main interface
     [self dismissViewControllerAnimated:YES completion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"TermsAgreedNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameTermsAgreed] object:nil];
     }];
 }
 

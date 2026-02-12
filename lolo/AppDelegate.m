@@ -12,6 +12,7 @@
 #import "Views/TermsAgreementViewController.h"
 #import "Utils/LoloDataConnector.h"
 #import <AVFoundation/AVFoundation.h>
+#import "StringObfuscation.h"
 
 @implementation AppDelegate
 
@@ -39,7 +40,7 @@
     // Observe account deletion notification
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleAccountDeleted:)
-                                                 name:@"AccountDeletedNotification"
+                                                 name:[StringObfuscation notificationNameAccountDeleted]
                                                object:nil];
     
     // Initialize Data Connector
@@ -65,7 +66,7 @@
 }
 
 - (void)checkAndShowTermsIfNeeded {
-    BOOL hasAccepted = [[NSUserDefaults standardUserDefaults] boolForKey:@"HasAgreedToTerms"];
+    BOOL hasAccepted = [[NSUserDefaults standardUserDefaults] boolForKey:[StringObfuscation userDefaultsKeyHasAgreedToTerms]];
     
     if (!hasAccepted) {
         TermsAgreementViewController *termsVC = [[TermsAgreementViewController alloc] init];

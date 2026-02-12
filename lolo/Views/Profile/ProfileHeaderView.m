@@ -11,6 +11,7 @@
 #import "ImageLoader.h"
 #import "DataService.h"
 #import "LoloWalletDetailView.h"
+#import "StringObfuscation.h"
 
 @interface ProfileHeaderView ()
 @property (nonatomic, strong) UIImageView *avatarImageView;
@@ -41,7 +42,7 @@
         // Listen for coins balance changes
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(updateCoinsBalance)
-                                                     name:@"CoinsBalanceDidChangeNotification"
+                                                     name:[StringObfuscation notificationNameCoinsBalanceChanged]
                                                    object:nil];
     }
     return self;

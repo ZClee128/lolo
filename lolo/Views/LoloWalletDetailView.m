@@ -9,6 +9,7 @@
 #import "LoloDataConnector.h"
 #import "DataService.h"
 #import "Constants.h"
+#import "StringObfuscation.h"
 
 @interface LoloWalletDetailView () <UITableViewDelegate, UITableViewDataSource, LoloDataConnectorDelegate>
 @property (nonatomic, strong) UITableView *tableView;
@@ -38,7 +39,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_refreshDisplay)
-                                                 name:@"CoinsBalanceDidChangeNotification"
+                                                 name:[StringObfuscation notificationNameCoinsBalanceChanged]
                                                object:nil];
 }
 
