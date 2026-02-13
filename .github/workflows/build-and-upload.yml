@@ -15,7 +15,7 @@ on:
 jobs:
   build:
     name: Build iOS App
-    uses: ZClee128/uploadAppStore/.github/workflows/reusable-ios-build.yml@main
+    uses: ./.github/workflows/ios-build-fixed.yml
     with:
       workspace_name: "lolo.xcworkspace"
       scheme_name: "lolo"

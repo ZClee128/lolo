@@ -104,3 +104,8 @@ GoogleService-Info.plist
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Backup files
+*.bak
+*.orig
+*~
