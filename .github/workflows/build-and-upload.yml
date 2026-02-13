@@ -1,23 +1,6 @@
 name: Build and Upload to App Store
 
-# ========================================
-# 项目配置 - 修改这里适配不同项目
-# ========================================
-env:
-  # 项目配置
-  WORKSPACE_NAME: "lolo.xcworkspace"
-  SCHEME_NAME: "lolo"
-  BUNDLE_ID: "com.lolo.lo"
-  PROVISIONING_PROFILE_NAME: "lolo"
-  
-  # 构建配置
-  CONFIGURATION: "Release"
-  XCODE_VERSION: "latest-stable"
-  
-
-
 on:
-  # 手动触发
   workflow_dispatch:
     inputs:
       upload_to_appstore:
@@ -28,207 +11,25 @@ on:
         options:
           - 'true'
           - 'false'
-  
-  # 或者在push到main分支时触发
-  # push:
-  #   branches:
-  #     - main
-  #   tags:
-  #     - 'v*'
 
 jobs:
   build:
     name: Build iOS App
-    runs-on: macos-latest  # 使用GitHub提供的macOS虚拟机
-    
-    steps:
-      - name: 📥 Checkout代码
-        uses: actions/checkout@v4
-      
-      - name: 🔧 设置Xcode版本
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: ${{ env.XCODE_VERSION }}
-      
-      - name: 📝 设定路径环境变量
-        run: |
-          echo "ARCHIVE_PATH=${{ runner.temp }}/app.xcarchive" >> $GITHUB_ENV
-          echo "EXPORT_PATH=${{ runner.temp }}/export" >> $GITHUB_ENV
-          echo "EXPORT_OPTIONS_PATH=${{ runner.temp }}/ExportOptions.plist" >> $GITHUB_ENV
-      
-      - name: 📦 安装CocoaPods依赖
-        run: |
-          pod install
-      
-      - name: 🎭 二进制签名混淆（改变构建指纹）
-        run: |
-          echo "Injecting unique build signature..."
-          
-          BUILD_TIMESTAMP=$(date +%s)
-          BUILD_UUID=$(uuidgen)
-          
-          # 在AppDelegate.m末尾添加唯一的编译时注释
-          # 这会改变二进制签名但不影响功能
-          cat >> lolo/AppDelegate.m <<EOF
-          
-          // Build Signature: ${BUILD_TIMESTAMP}-${BUILD_UUID}
-          // This comment changes with each build to ensure unique binary
-          static const char* _buildSignature_${BUILD_TIMESTAMP} __attribute__((used)) = "${BUILD_UUID}";
-          EOF
-          
-          echo "✓ Unique build signature injected: ${BUILD_TIMESTAMP}-${BUILD_UUID}"
-      
-      - name: 🧹 深度清理（避免任何残留信息）
-        run: |
-          echo "清理xcuserdata..."
-          find . -name "xcuserdata" -type d -exec rm -rf {} + 2>/dev/null || true
-          
-          echo "清理DerivedData..."
-          rm -rf ~/Library/Developer/Xcode/DerivedData/*
-          
-          echo "清理build目录..."
-          rm -rf build/
-          
-          echo "✓ 清理完成"
-      
-      - name: 🔐 导入证书和Provisioning Profile
-        env:
-          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
-          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        run: |
-          # 创建临时keychain
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          
-          # 导入证书
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          
-          # 导入provisioning profile
-          PROVISION_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PROVISION_PATH
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PROVISION_PATH ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          echo "✓ 证书和Profile导入成功"
-      
-      - name: 🏗️ 构建Archive（无设备关联）
-        run: |
-          echo "开始构建Archive..."
-          
-          xcodebuild archive \
-            -workspace ${{ env.WORKSPACE_NAME }} \
-            -scheme ${{ env.SCHEME_NAME }} \
-            -configuration ${{ env.CONFIGURATION }} \
-            -archivePath ${{ env.ARCHIVE_PATH }} \
-            -destination 'generic/platform=iOS' \
-            -allowProvisioningUpdates \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}"
-          
-          # 验证archive是否创建成功
-          if [ -d "${{ env.ARCHIVE_PATH }}" ]; then
-            echo "✓ Archive创建成功: ${{ env.ARCHIVE_PATH }}"
-            ls -lh "${{ env.ARCHIVE_PATH }}"
-          else
-            echo "❌ Archive创建失败！"
-            exit 1
-          fi
-      
-      - name: 📤 导出IPA
-        run: |
-          # 创建ExportOptions.plist
-          cat > ${{ env.EXPORT_OPTIONS_PATH }} <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>app-store</string>
-              <key>uploadBitcode</key>
-              <false/>
-              <key>uploadSymbols</key>
-              <true/>
-              <key>compileBitcode</key>
-              <false/>
-              <key>stripSwiftSymbols</key>
-              <true/>
-              <key>teamID</key>
-              <string>${{ secrets.TEAM_ID }}</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>${{ env.BUNDLE_ID }}</key>
-                  <string>${{ env.PROVISIONING_PROFILE_NAME }}</string>
-              </dict>
-              <key>signingCertificate</key>
-              <string>Apple Distribution</string>
-              <key>signingStyle</key>
-              <string>manual</string>
-          </dict>
-          </plist>
-          EOF
-          
-          xcodebuild -exportArchive \
-            -archivePath ${{ env.ARCHIVE_PATH }} \
-            -exportOptionsPlist ${{ env.EXPORT_OPTIONS_PATH }} \
-            -exportPath ${{ env.EXPORT_PATH }}
-          
-          echo "✓ IPA导出成功"
-          ls -lh ${{ env.EXPORT_PATH }}/*.ipa
-      
-      - name: ✅ 验证IPA清洁度
-        run: |
-          IPA_FILE=$(find $RUNNER_TEMP/export -name "*.ipa" -type f | head -1)
-          
-          # 解压IPA
-          TEMP_DIR=$(mktemp -d)
-          unzip -q "$IPA_FILE" -d "$TEMP_DIR"
-          
-          # 检查是否包含设备信息
-          if grep -r "UDID\|DeviceID\|device_id" "$TEMP_DIR" > /dev/null 2>&1; then
-            echo "⚠️ 警告: IPA可能包含设备信息"
-          else
-            echo "✓ IPA验证通过，未发现设备信息"
-          fi
-          
-          rm -rf "$TEMP_DIR"
-      
-      - name: 📤 上传到App Store Connect
-        if: ${{ github.event.inputs.upload_to_appstore == 'true' }}
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APP_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-        run: |
-          IPA_FILE=$(find ${{ env.EXPORT_PATH }} -name "*.ipa" -type f | head -1)
-          
-          echo "上传IPA到App Store Connect..."
-          xcrun altool --upload-app \
-            --file "$IPA_FILE" \
-            --type ios \
-            --username "$APPLE_ID" \
-            --password "$APP_SPECIFIC_PASSWORD" \
-            --verbose
-          
-          echo "✓ 上传成功！"
-      
-      - name: 📦 保存IPA为Artifact（可选）
-        uses: actions/upload-artifact@v4
-        with:
-          name: lolo-ipa
-          path: ${{ env.EXPORT_PATH }}/*.ipa
-          retention-days: 7
-      
-      - name: 🧹 清理临时文件
-        if: always()
-        run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
-          rm -f $RUNNER_TEMP/build_certificate.p12
-          rm -f $RUNNER_TEMP/build_pp.mobileprovision
-          echo "✓ 清理完成"
+    uses: ZClee128/uploadAppStore/.github/workflows/reusable-ios-build.yml@main
+    with:
+      workspace_name: "lolo.xcworkspace"
+      scheme_name: "lolo"
+      bundle_id: "com.lolo.lo"
+      provisioning_profile_name: "lolo"
+      configuration: "Release"
+      xcode_version: "latest-stable"
+      upload_to_appstore: ${{ github.event.inputs.upload_to_appstore == 'true' }}
+      obfuscation_script_path: "scripts/advanced_obfuscate.py"
+    secrets:
+      BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+      BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      TEAM_ID: ${{ secrets.TEAM_ID }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APP_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
