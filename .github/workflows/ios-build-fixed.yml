@@ -188,28 +188,22 @@ jobs:
           echo "PP_UUID=$UUID" >> $GITHUB_ENV
           echo "Found UUID: $UUID"
       
-      - name: 🔧 配置Pods目标为自动签名
+      - name: � 检查签名配置
         run: |
-          echo "配置Pods targets使用自动签名..."
+          echo "检查构建配置..."
           
-          PODS_PROJECT="Pods/Pods.xcodeproj"
-          
-          if [ -d "$PODS_PROJECT" ]; then
-            echo "找到Pods项目,开始配置..."
-            
-            # 使用xcodebuild修改Pods项目的签名配置
-            # 为所有Pods targets设置自动签名
-            xcodebuild -project "$PODS_PROJECT" \
-              -alltargets \
-              CODE_SIGN_STYLE=Automatic \
-              CODE_SIGN_IDENTITY="" \
-              PROVISIONING_PROFILE_SPECIFIER="" \
-              DEVELOPMENT_TEAM="" \
-              -showBuildSettings > /dev/null 2>&1 || true
-            
-            echo "✓ Pods targets配置完成"
+          # 检查主app项目设置
+          APP_PROJECT="${{ inputs.scheme_name }}.xcodeproj/project.pbxproj"
+          if grep -q "CODE_SIGN_STYLE = Manual" "$APP_PROJECT"; then
+             echo "✓ 主App已配置为手动签名 (Project Config)"
           else
-            echo "⚠️ 未找到Pods项目,跳过Pods配置"
+             echo "⚠️ 主App未配置为手动签名,构建可能会失败"
+          fi
+          
+          # 确认Pods使用自动签名
+          PODS_PROJ="Pods/Pods.xcodeproj/project.pbxproj"  
+          if grep -q 'ProvisioningStyle = Automatic' "$PODS_PROJ" 2>/dev/null; then
+            echo "✓ Pods使用自动签名"
           fi
       
       - name: 🏗️ 构建Archive
@@ -218,17 +212,19 @@ jobs:
           
           ARCHIVE_PATH="$RUNNER_TEMP/app.xcarchive"
           
-          # 只为主app target设置手动签名,Pods targets已经在上一步设置为自动签名
+          # 使用项目文件中的配置进行构建
+          # 只传递DEVELOPMENT_TEAM,不强制全局CODE_SIGN_STYLE
+          # 这样主target会使用Manual, Pods会使用Automatic
           xcodebuild archive \
             -workspace ${{ inputs.workspace_name }} \
             -scheme ${{ inputs.scheme_name }} \
             -configuration ${{ inputs.configuration }} \
             -archivePath "$ARCHIVE_PATH" \
             -destination 'generic/platform=iOS' \
-            CODE_SIGN_STYLE="Manual" \
-            PROVISIONING_PROFILE="${{ env.PP_UUID }}" \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
             DEVELOPMENT_TEAM="${{ secrets.TEAM_ID }}"
+
+
+
           
           echo "ARCHIVE_PATH=$ARCHIVE_PATH" >> $GITHUB_ENV
           
