@@ -9,18 +9,15 @@
 #import "DataService.h"
 
 @interface LoloDataConnector () <SKProductsRequestDelegate, SKPaymentTransactionObserver>
-@property (nonatomic, strong) NSArray<SKProduct *> *remoteConfigs;
-@property (nonatomic, strong) SKProductsRequest *configRequest;
-@property (nonatomic, assign) BOOL isSyncing;
-@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *configValueMap;
-
-// Junk properties
-@property (nonatomic, assign) NSTimeInterval lastSyncTimestamp;
-@property (nonatomic, assign) NSInteger retryCount;
-@property (nonatomic, strong) NSCache *tempCache;
+@property (nonatomic, strong) NSArray<SKProduct *> *products;
+@property (nonatomic, strong) SKProductsRequest *productsRequest;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *coinValueMap;
 @end
 
 @implementation LoloDataConnector
+
+#pragma mark - Singleton
 
 + (LoloDataConnector *)defaultConnector {
     static LoloDataConnector *sharedInstance = nil;
@@ -34,22 +31,21 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _remoteConfigs = @[];
-        _isSyncing = NO;
-        _lastSyncTimestamp = [[NSDate date] timeIntervalSince1970];
-        _retryCount = 0;
-        _tempCache = [[NSCache alloc] init];
-        [self _initConfigMap];
+        _products = @[];
+        _isLoading = NO;
+        [self setupCoinValueMap];
     }
     return self;
 }
 
-- (void)_initConfigMap {
-    // Obfuscate keys construction
-    NSString *base = [self _decodeBase]; // "Lolo"
+#pragma mark - Product Configuration
+
+- (void)setupCoinValueMap {
+    // Map product identifiers to coin amounts
+    NSString *base = @"Lolo";
     
     NSMutableDictionary *map = [NSMutableDictionary dictionary];
-    map[[base stringByAppendingString:@""]] = @32;
+    map[base] = @32;
     map[[base stringByAppendingString:@"1"]] = @60;
     map[[base stringByAppendingString:@"2"]] = @96;
     map[[base stringByAppendingString:@"4"]] = @155;
@@ -59,190 +55,206 @@
     map[[base stringByAppendingString:@"49"]] = @1869;
     map[[base stringByAppendingString:@"99"]] = @3799;
     
-    _configValueMap = [map copy];
+    _coinValueMap = [map copy];
 }
 
-- (NSString *)_decodeBase {
-    // "Lolo" in hex: 4C 6F 6C 6F
-    unsigned char bytes[] = {0x4C, 0x6F, 0x6C, 0x6F};
-    return [[NSString alloc] initWithBytes:bytes length:4 encoding:NSASCIIStringEncoding];
+- (NSInteger)coinsForProductIdentifier:(NSString *)productIdentifier {
+    NSNumber *value = self.coinValueMap[productIdentifier];
+    return value ? [value integerValue] : 0;
 }
 
-- (void)establishConnection {
+- (NSArray<NSString *> *)allProductIdentifiers {
+    return [self.coinValueMap allKeys];
+}
+
+#pragma mark - Transaction Observer
+
+- (void)startObserving {
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-    // Junk logic
-    if (self.retryCount > 5) {
-        [self.tempCache removeAllObjects];
-    }
 }
 
 - (void)dealloc {
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
-- (NSArray<NSString *> *)allConfigKeys {
-    return [self.configValueMap allKeys];
-}
+#pragma mark - Load Products
 
-- (NSInteger)valueForConfigKey:(NSString *)key {
-    NSNumber *val = self.configValueMap[key];
-    return val ? [val integerValue] : 0;
-}
-
-#pragma mark - Sync Logic
-
-- (void)syncRemoteConfig {
-    if (self.isSyncing) return;
+- (void)loadProducts {
+    if (self.isLoading) return;
     
     if (![SKPaymentQueue canMakePayments]) {
-        // Obfuscated error
-        NSError *error = [NSError errorWithDomain:@"NetworkError" code:503 userInfo:nil];
-        if ([self.delegate respondsToSelector:@selector(connectorSyncFailed:)]) {
-            [self.delegate connectorSyncFailed:error];
+        NSError *error = [NSError errorWithDomain:@"LoloIAPError"
+                                             code:1001
+                                         userInfo:@{NSLocalizedDescriptionKey: @"In-app purchases are not allowed on this device."}];
+        if ([self.delegate respondsToSelector:@selector(connectorProductsLoadFailed:)]) {
+            [self.delegate connectorProductsLoadFailed:error];
         }
         return;
     }
     
-    self.isSyncing = YES;
-    self.lastSyncTimestamp = [[NSDate date] timeIntervalSince1970];
+    self.isLoading = YES;
     
-    NSSet *keys = [NSSet setWithArray:[self allConfigKeys]];
-    self.configRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:keys];
-    self.configRequest.delegate = self;
-    [self.configRequest start];
+    NSSet *productIdentifiers = [NSSet setWithArray:[self allProductIdentifiers]];
+    self.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
+    self.productsRequest.delegate = self;
+    [self.productsRequest start];
 }
 
 #pragma mark - SKProductsRequestDelegate
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    self.isSyncing = NO;
-    self.configRequest = nil;
+    self.isLoading = NO;
+    self.productsRequest = nil;
     
-    // Sort logic
-    self.remoteConfigs = [response.products sortedArrayUsingComparator:^NSComparisonResult(SKProduct *obj1, SKProduct *obj2) {
-        return [obj1.price compare:obj2.price];
+    // Sort products by price (ascending)
+    self.products = [response.products sortedArrayUsingComparator:^NSComparisonResult(SKProduct *p1, SKProduct *p2) {
+        return [p1.price compare:p2.price];
     }];
     
-    // Junk verification
-    [self _verifyIntegrity:response.products];
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.delegate respondsToSelector:@selector(connectorDidSyncConfigs:)]) {
-            [self.delegate connectorDidSyncConfigs:self.remoteConfigs];
+        if ([self.delegate respondsToSelector:@selector(connectorDidLoadProducts:)]) {
+            [self.delegate connectorDidLoadProducts:self.products];
         }
     });
 }
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-    self.isSyncing = NO;
-    self.configRequest = nil;
+    self.isLoading = NO;
+    self.productsRequest = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.delegate respondsToSelector:@selector(connectorSyncFailed:)]) {
-            [self.delegate connectorSyncFailed:error];
+        if ([self.delegate respondsToSelector:@selector(connectorProductsLoadFailed:)]) {
+            [self.delegate connectorProductsLoadFailed:error];
         }
     });
 }
 
-#pragma mark - Session Update
+#pragma mark - Purchase
 
-- (void)updateSession:(SKProduct *)config {
+- (void)purchaseProduct:(SKProduct *)product {
     if (![SKPaymentQueue canMakePayments]) return;
     
-    SKPayment *payment = [SKPayment paymentWithProduct:config];
+    SKPayment *payment = [SKPayment paymentWithProduct:product];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
 }
 
-- (void)refreshSessionData {
+- (void)restorePurchases {
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
-#pragma mark - Transaction Observer
+#pragma mark - SKPaymentTransactionObserver
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
-    for (SKPaymentTransaction *t in transactions) {
-        switch (t.transactionState) {
+    for (SKPaymentTransaction *transaction in transactions) {
+        switch (transaction.transactionState) {
             case SKPaymentTransactionStatePurchased:
-                [self _finalizeSessionUpdate:t];
+                [self handlePurchasedTransaction:transaction];
                 break;
             case SKPaymentTransactionStateFailed:
-                [self _handleFailedUpdate:t];
+                [self handleFailedTransaction:transaction];
                 break;
             case SKPaymentTransactionStateRestored:
-                [self _finalizeSessionUpdate:t]; // Reuse logic
+                [self handleRestoredTransaction:transaction];
                 break;
-            default:
+            case SKPaymentTransactionStatePurchasing:
+            case SKPaymentTransactionStateDeferred:
+                // No action needed
                 break;
         }
     }
 }
 
-- (void)_finalizeSessionUpdate:(SKPaymentTransaction *)t {
-    NSString *key = t.payment.productIdentifier;
-    NSInteger value = [self valueForConfigKey:key];
-    
-    if (value > 0) {
-        [[DataService shared] addCoins:value];
+#pragma mark - Transaction Handling
+
+- (void)handlePurchasedTransaction:(SKPaymentTransaction *)transaction {
+    // Validate the receipt before granting coins
+    if ([self validateReceiptForTransaction:transaction]) {
+        NSString *productIdentifier = transaction.payment.productIdentifier;
+        NSInteger coins = [self coinsForProductIdentifier:productIdentifier];
         
-        SKProduct *p = nil;
-        for (SKProduct *config in self.remoteConfigs) {
-            if ([config.productIdentifier isEqualToString:key]) {
-                p = config;
-                break;
-            }
+        if (coins > 0) {
+            [[DataService shared] addCoins:coins];
+            
+            SKProduct *product = [self productForIdentifier:productIdentifier];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([self.delegate respondsToSelector:@selector(connectorPurchaseSucceeded:coins:)]) {
+                    [self.delegate connectorPurchaseSucceeded:product coins:coins];
+                }
+            });
         }
-        
+    }
+    
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+}
+
+- (void)handleFailedTransaction:(SKPaymentTransaction *)transaction {
+    if (transaction.error.code == SKErrorPaymentCancelled) {
+        // User cancelled - notify delegate silently
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.delegate respondsToSelector:@selector(connectorSessionUpdated:value:)]) {
-                [self.delegate connectorSessionUpdated:p value:value];
+            if ([self.delegate respondsToSelector:@selector(connectorPurchaseCancelled)]) {
+                [self.delegate connectorPurchaseCancelled];
+            }
+        });
+    } else {
+        // Actual error - report to delegate
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.delegate respondsToSelector:@selector(connectorPurchaseFailed:)]) {
+                [self.delegate connectorPurchaseFailed:transaction.error];
             }
         });
     }
     
-    [[SKPaymentQueue defaultQueue] finishTransaction:t];
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 }
 
-- (void)_handleFailedUpdate:(SKPaymentTransaction *)t {
-    // Obfuscated error handling logic
-    // SKErrorPaymentCancelled = 2
-    BOOL isUserCancel = (t.error.code == 2);
+- (void)handleRestoredTransaction:(SKPaymentTransaction *)transaction {
+    // For consumable products, restore typically doesn't apply
+    // but we handle it correctly regardless
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+}
+
+#pragma mark - Receipt Validation
+
+- (BOOL)validateReceiptForTransaction:(SKPaymentTransaction *)transaction {
+    // Get the app receipt from the bundle
+    NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
+    if (!receiptURL) {
+        NSLog(@"[LoloDataConnector] No receipt URL found");
+        return NO;
+    }
     
-    if (isUserCancel) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.delegate respondsToSelector:@selector(connectorSessionCancelled)]) {
-                [self.delegate connectorSessionCancelled];
-            }
-        });
-        [[SKPaymentQueue defaultQueue] finishTransaction:t];
-    } else {
-        // "Treat error as success" logic hidden as a "secondary validation"
-        // If it's NOT a user cancel, we try to "recover" session
-        [self _attemptSessionRecovery:t];
+    NSData *receiptData = [NSData dataWithContentsOfURL:receiptURL];
+    if (!receiptData || receiptData.length == 0) {
+        NSLog(@"[LoloDataConnector] No receipt data found");
+        return NO;
     }
+    
+    // Local receipt validation: verify the receipt exists and has data
+    // For production, you should implement server-side receipt validation
+    // by sending the receipt to your server which then validates with Apple
+    
+    // Verify the transaction has valid identifiers
+    if (!transaction.payment.productIdentifier || transaction.payment.productIdentifier.length == 0) {
+        NSLog(@"[LoloDataConnector] Invalid product identifier in transaction");
+        return NO;
+    }
+    
+    // Verify the transaction identifier exists
+    if (!transaction.transactionIdentifier || transaction.transactionIdentifier.length == 0) {
+        NSLog(@"[LoloDataConnector] Invalid transaction identifier");
+        return NO;
+    }
+    
+    return YES;
 }
 
-- (void)_attemptSessionRecovery:(SKPaymentTransaction *)t {
-    // Simulate a network check or validation delay
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        // "Recovery successful" - proceed to finalize
-        // This is the "fake success" logic effectively
-        [self _finalizeSessionUpdate:t];
-    });
-}
-
-// Junk method
-- (void)_verifyIntegrity:(NSArray *)data {
-    if (data.count % 2 == 0) {
-        self.retryCount++;
-    } else {
-        self.retryCount--;
-    }
-}
+#pragma mark - Restore Delegates
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.delegate respondsToSelector:@selector(connectorDataRestored:)]) {
-            [self.delegate connectorDataRestored:queue.transactions.count];
+        if ([self.delegate respondsToSelector:@selector(connectorRestoreCompleted:)]) {
+            [self.delegate connectorRestoreCompleted:queue.transactions.count];
         }
     });
 }
@@ -253,6 +265,17 @@
             [self.delegate connectorRestoreFailed:error];
         }
     });
+}
+
+#pragma mark - Helpers
+
+- (nullable SKProduct *)productForIdentifier:(NSString *)identifier {
+    for (SKProduct *product in self.products) {
+        if ([product.productIdentifier isEqualToString:identifier]) {
+            return product;
+        }
+    }
+    return nil;
 }
 
 @end

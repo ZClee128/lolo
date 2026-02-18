@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *balanceLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, strong) NSArray<SKProduct *> *sessionConfigs;
+@property (nonatomic, strong) NSArray<SKProduct *> *products;
 @end
 
 @implementation LoloWalletDetailView
@@ -31,14 +31,14 @@
                                                              action:@selector(dismissView)];
     self.navigationItem.leftBarButtonItem = close;
     
-    [self _initInterface];
-    [self _refreshDisplay];
+    [self setupUI];
+    [self updateBalance];
     
     [LoloDataConnector defaultConnector].delegate = self;
-    [[LoloDataConnector defaultConnector] syncRemoteConfig];
+    [[LoloDataConnector defaultConnector] loadProducts];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(_refreshDisplay)
+                                             selector:@selector(updateBalance)
                                                  name:[StringObfuscation notificationNameCoinsBalanceChanged]
                                                object:nil];
 }
@@ -47,14 +47,14 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)_initInterface {
+- (void)setupUI {
     // Header
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 80)];
     header.backgroundColor = [LOLOColors primary];
     [self.view addSubview:header];
     
     UILabel *title = [[UILabel alloc] init];
-    title.text = @"Account Wallet"; // Obfuscated title
+    title.text = @"Account Wallet";
     title.font = [LOLOFonts body];
     title.textColor = [UIColor whiteColor];
     title.textAlignment = NSTextAlignmentCenter;
@@ -69,7 +69,7 @@
     [header addSubview:self.balanceLabel];
     
     UILabel *desc = [[UILabel alloc] init];
-    desc.text = @"Tap to recharge your balance"; // Obfuscated description
+    desc.text = @"Tap to recharge your balance";
     desc.font = [LOLOFonts caption];
     desc.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
     desc.textAlignment = NSTextAlignmentCenter;
@@ -108,9 +108,9 @@
     ]];
 }
 
-- (void)_refreshDisplay {
-    NSInteger val = [[DataService shared] getCurrentUserCoins];
-    self.balanceLabel.text = [NSString stringWithFormat:@"%ld", (long)val];
+- (void)updateBalance {
+    NSInteger coins = [[DataService shared] getCurrentUserCoins];
+    self.balanceLabel.text = [NSString stringWithFormat:@"%ld", (long)coins];
 }
 
 - (void)dismissView {
@@ -120,7 +120,7 @@
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.sessionConfigs.count;
+    return self.products.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -183,72 +183,65 @@
         ]];
     }
     
-    SKProduct *p = self.sessionConfigs[indexPath.row];
-    NSInteger val = [[LoloDataConnector defaultConnector] valueForConfigKey:p.productIdentifier];
+    SKProduct *product = self.products[indexPath.row];
+    NSInteger coins = [[LoloDataConnector defaultConnector] coinsForProductIdentifier:product.productIdentifier];
     
     UILabel *lbl1 = [cell.contentView viewWithTag:101];
-    lbl1.text = [NSString stringWithFormat:@"%ld", (long)val];
+    lbl1.text = [NSString stringWithFormat:@"%ld coins", (long)coins];
     
     UILabel *lbl2 = [cell.contentView viewWithTag:102];
     NSNumberFormatter *fmt = [[NSNumberFormatter alloc] init];
     fmt.numberStyle = NSNumberFormatterCurrencyStyle;
-    fmt.locale = p.priceLocale;
-    lbl2.text = [fmt stringFromNumber:p.price];
+    fmt.locale = product.priceLocale;
+    lbl2.text = [fmt stringFromNumber:product.price];
     
     UIButton *btn = [cell.contentView viewWithTag:103];
-    [btn setTitle:@"Get" forState:UIControlStateNormal];
+    [btn setTitle:@"Buy" forState:UIControlStateNormal];
     [btn removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
-    [btn addTarget:self action:@selector(actionTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [btn addTarget:self action:@selector(buyTapped:) forControlEvents:UIControlEventTouchUpInside];
     btn.tag = 200 + indexPath.row;
     
     return cell;
 }
 
-- (void)actionTapped:(UIButton *)sender {
+- (void)buyTapped:(UIButton *)sender {
     NSInteger idx = sender.tag - 200;
-    if (idx >= 0 && idx < self.sessionConfigs.count) {
-        SKProduct *p = self.sessionConfigs[idx];
-        [[LoloDataConnector defaultConnector] updateSession:p];
+    if (idx >= 0 && idx < self.products.count) {
+        SKProduct *product = self.products[idx];
+        [[LoloDataConnector defaultConnector] purchaseProduct:product];
     }
 }
 
-#pragma mark - Delegate
+#pragma mark - LoloDataConnectorDelegate
 
-- (void)connectorDidSyncConfigs:(NSArray<SKProduct *> *)configs {
+- (void)connectorDidLoadProducts:(NSArray<SKProduct *> *)products {
     [self.activityIndicator stopAnimating];
-    self.sessionConfigs = configs;
+    self.products = products;
     [self.tableView reloadData];
 }
 
-- (void)connectorSyncFailed:(NSError *)error {
+- (void)connectorProductsLoadFailed:(NSError *)error {
     [self.activityIndicator stopAnimating];
-    // Silent fail or generic message
 }
 
-- (void)connectorSessionUpdated:(SKProduct *)config value:(NSInteger)value {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Updated"
-                                                                   message:[NSString stringWithFormat:@"Added %ld to wallet", (long)value]
+- (void)connectorPurchaseSucceeded:(SKProduct *)product coins:(NSInteger)coins {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Purchase Successful"
+                                                                   message:[NSString stringWithFormat:@"Added %ld coins to your wallet", (long)coins]
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)connectorSessionUpdateFailed:(NSError *)error {
-    // Obfuscated failure message
-    NSString *msg = @"Connection timeout";
-    if (error.code == 0) { // Generic catch
-        msg = @"Please try again";
-    }
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Status"
-                                                                   message:msg
+- (void)connectorPurchaseFailed:(NSError *)error {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Purchase Failed"
+                                                                   message:error.localizedDescription ?: @"Please try again later."
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)connectorSessionCancelled {
-    // No op
+- (void)connectorPurchaseCancelled {
+    // User cancelled, no action needed
 }
 
 @end

@@ -311,6 +311,8 @@ jobs:
           IPA_FILE=$(find ${{ env.EXPORT_PATH }} -name "*.ipa" -type f | head -1)
           
           echo "上传IPA到App Store Connect..."
+          # Note: altool is deprecated. Consider migrating to App Store Connect API
+          # or Transporter CLI in future versions.
           xcrun altool --upload-app \
             --file "$IPA_FILE" \
             --type ios \

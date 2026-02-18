@@ -12,39 +12,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol LoloDataConnectorDelegate <NSObject>
 @optional
-- (void)connectorDidSyncConfigs:(NSArray<SKProduct *> *)configs;
-- (void)connectorSyncFailed:(NSError *)error;
-- (void)connectorSessionUpdated:(SKProduct *)config value:(NSInteger)value;
-- (void)connectorSessionUpdateFailed:(NSError *)error;
-- (void)connectorSessionCancelled;
-- (void)connectorDataRestored:(NSInteger)count;
+- (void)connectorDidLoadProducts:(NSArray<SKProduct *> *)products;
+- (void)connectorProductsLoadFailed:(NSError *)error;
+- (void)connectorPurchaseSucceeded:(SKProduct *)product coins:(NSInteger)coins;
+- (void)connectorPurchaseFailed:(NSError *)error;
+- (void)connectorPurchaseCancelled;
+- (void)connectorRestoreCompleted:(NSInteger)count;
 - (void)connectorRestoreFailed:(NSError *)error;
 @end
 
 @interface LoloDataConnector : NSObject
 
-@property (class, nonatomic, readonly) LoloDataConnector *defaultConnector;
 @property (nonatomic, weak) id<LoloDataConnectorDelegate> delegate;
-@property (nonatomic, strong, readonly) NSArray<SKProduct *> *remoteConfigs;
-@property (nonatomic, assign, readonly) BOOL isSyncing;
+@property (nonatomic, strong, readonly) NSArray<SKProduct *> *products;
+@property (nonatomic, assign, readonly) BOOL isLoading;
 
-// Initialize Connection
-- (void)establishConnection;
++ (LoloDataConnector *)defaultConnector;
 
-// Sync remote config
-- (void)syncRemoteConfig;
+/// Register as payment transaction observer
+- (void)startObserving;
 
-// Update session with config
-- (void)updateSession:(SKProduct *)config;
+/// Request product information from App Store
+- (void)loadProducts;
 
-// Refresh session data
-- (void)refreshSessionData;
+/// Initiate a purchase for a product
+- (void)purchaseProduct:(SKProduct *)product;
 
-// Get value for config key
-- (NSInteger)valueForConfigKey:(NSString *)key;
+/// Restore previous purchases
+- (void)restorePurchases;
 
-// Get all config keys
-- (NSArray<NSString *> *)allConfigKeys;
+/// Get coin value for a product identifier
+- (NSInteger)coinsForProductIdentifier:(NSString *)productIdentifier;
+
+/// Get all registered product identifiers
+- (NSArray<NSString *> *)allProductIdentifiers;
 
 @end
 

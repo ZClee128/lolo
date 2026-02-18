@@ -43,9 +43,9 @@
                                                  name:[StringObfuscation notificationNameAccountDeleted]
                                                object:nil];
     
-    // Initialize Data Connector
-    [[LoloDataConnector defaultConnector] establishConnection];
-    DLog(@"Data Connector initialized");
+    // Start observing IAP transactions
+    [[LoloDataConnector defaultConnector] startObserving];
+    DLog(@"IAP transaction observer started");
     
     // Check if user has accepted terms
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
