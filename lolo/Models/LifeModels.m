@@ -1,11 +1,11 @@
 //
-//  LOLOModels.m
+//  LifeModels.m
 //  lolo
 //
 //  Created on 2026/1/30.
 //
 
-#import "LOLOModels.h"
+#import "LifeModels.h"
 #import "User.h"
 #import "Message.h"
 
@@ -18,5 +18,5 @@
 @implementation Conversation
 @end
 
-@implementation SportRecord
+@implementation HabitRecord
 @end

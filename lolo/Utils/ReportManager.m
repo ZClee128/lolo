@@ -10,7 +10,7 @@
 #import "Post.h"
 #import "User.h"
 #import "DebugLogger.h"
-#import "StringObfuscation.h"
+
 
 @interface ReportManager()
 @property (nonatomic, strong) NSMutableArray<Report *> *reports;
@@ -149,7 +149,7 @@
 
 - (void)loadPersistedData {
     // Load blocked users from UserDefaults
-    NSDictionary *saved = [[NSUserDefaults standardUserDefaults] objectForKey:[StringObfuscation userDefaultsKeyBlockedUsers]];
+    NSDictionary *saved = [[NSUserDefaults standardUserDefaults] objectForKey:@"BlockedUsers"];
     if (saved) {
         self.blockedUsers = [saved mutableCopy];
     }
@@ -160,7 +160,7 @@
 
 - (void)savePersistedData {
     // Save blocked users to UserDefaults
-    [[NSUserDefaults standardUserDefaults] setObject:self.blockedUsers forKey:[StringObfuscation userDefaultsKeyBlockedUsers]];
+    [[NSUserDefaults standardUserDefaults] setObject:self.blockedUsers forKey:@"BlockedUsers"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     // In a real app, reports would be synced to server

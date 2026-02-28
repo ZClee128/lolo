@@ -13,6 +13,7 @@
 #import "DebugLogger.h"
 #import <AVFoundation/AVFoundation.h>
 #import <objc/runtime.h>
+#import "DataService.h"
 
 @interface FeedCardCell()
 @property (nonatomic, strong) Post *currentPost;
@@ -26,7 +27,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.backgroundColor = [LOLOColors background];
+        self.backgroundColor = [LifeColors background];
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self setupUI];
     }
@@ -37,7 +38,7 @@
     // Card container
     self.cardView = [[UIView alloc] init];
     self.cardView.backgroundColor = [UIColor whiteColor];
-    self.cardView.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.cardView.layer.cornerRadius = [LifeCornerRadius standard];
     self.cardView.layer.shadowColor = [UIColor blackColor].CGColor;
     self.cardView.layer.shadowOffset = CGSizeMake(0, 2);
     self.cardView.layer.shadowOpacity = 0.1;
@@ -56,23 +57,23 @@
     
     // Username
     self.usernameLabel = [[UILabel alloc] init];
-    self.usernameLabel.font = [LOLOFonts bodyBold];
-    self.usernameLabel.textColor = [LOLOColors textPrimary];
+    self.usernameLabel.font = [LifeFonts bodyBold];
+    self.usernameLabel.textColor = [LifeColors textPrimary];
     self.usernameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.usernameLabel];
     
     // Time
     self.timeLabel = [[UILabel alloc] init];
-    self.timeLabel.font = [LOLOFonts caption];
-    self.timeLabel.textColor = [LOLOColors textSecondary];
+    self.timeLabel.font = [LifeFonts caption];
+    self.timeLabel.textColor = [LifeColors textSecondary];
     self.timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.timeLabel];
     
     // Sport badge
     self.sportBadgeLabel = [[UILabel alloc] init];
-    self.sportBadgeLabel.font = [LOLOFonts caption];
+    self.sportBadgeLabel.font = [LifeFonts caption];
     self.sportBadgeLabel.textColor = [UIColor whiteColor];
-    self.sportBadgeLabel.backgroundColor = [LOLOColors primary];
+    self.sportBadgeLabel.backgroundColor = [LifeColors primary];
     self.sportBadgeLabel.textAlignment = NSTextAlignmentCenter;
     self.sportBadgeLabel.layer.cornerRadius = 12;
     self.sportBadgeLabel.clipsToBounds = YES;
@@ -82,7 +83,7 @@
     // More button (report/block)
     UIButton *moreButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [moreButton setImage:[UIImage systemImageNamed:@"ellipsis"] forState:UIControlStateNormal];
-    moreButton.tintColor = [LOLOColors textSecondary];
+    moreButton.tintColor = [LifeColors textSecondary];
     moreButton.translatesAutoresizingMaskIntoConstraints = NO;
     [moreButton addTarget:self action:@selector(moreButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     moreButton.showsMenuAsPrimaryAction = YES;
@@ -93,8 +94,8 @@
     
     // Content
     self.contentLabel = [[UILabel alloc] init];
-    self.contentLabel.font = [LOLOFonts body];
-    self.contentLabel.textColor = [LOLOColors textPrimary];
+    self.contentLabel.font = [LifeFonts body];
+    self.contentLabel.textColor = [LifeColors textPrimary];
     self.contentLabel.numberOfLines = 0;
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.contentLabel];
@@ -113,26 +114,26 @@
     self.playButton.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     self.playButton.layer.cornerRadius = 30;
     [self.playButton setImage:[UIImage systemImageNamed:@"play.fill"] forState:UIControlStateNormal];
-    self.playButton.tintColor = [LOLOColors textPrimary];
+    self.playButton.tintColor = [LifeColors textPrimary];
     self.playButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.mediaImageView addSubview:self.playButton];
     
     // Stats labels
     self.distanceLabel = [[UILabel alloc] init];
-    self.distanceLabel.font = [LOLOFonts caption];
-    self.distanceLabel.textColor = [LOLOColors textSecondary];
+    self.distanceLabel.font = [LifeFonts caption];
+    self.distanceLabel.textColor = [LifeColors textSecondary];
     self.distanceLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.distanceLabel];
     
     self.durationLabel = [[UILabel alloc] init];
-    self.durationLabel.font = [LOLOFonts caption];
-    self.durationLabel.textColor = [LOLOColors textSecondary];
+    self.durationLabel.font = [LifeFonts caption];
+    self.durationLabel.textColor = [LifeColors textSecondary];
     self.durationLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.durationLabel];
     
     self.caloriesLabel = [[UILabel alloc] init];
-    self.caloriesLabel.font = [LOLOFonts caption];
-    self.caloriesLabel.textColor = [LOLOColors textSecondary];
+    self.caloriesLabel.font = [LifeFonts caption];
+    self.caloriesLabel.textColor = [LifeColors textSecondary];
     self.caloriesLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.caloriesLabel];
     
@@ -149,19 +150,33 @@
     self.likeButton.userInteractionEnabled = YES;
     [self.cardView addSubview:self.likeButton];
     
+    // Tip button
+    self.tipButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.tipButton setImage:[UIImage systemImageNamed:@"gift.fill"] forState:UIControlStateNormal];
+    self.tipButton.tintColor = [UIColor systemOrangeColor];
+    self.tipButton.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightMedium];
+    [self.tipButton setTitleColor:[UIColor labelColor] forState:UIControlStateNormal];
+    self.tipButton.backgroundColor = [UIColor whiteColor];
+    self.tipButton.layer.cornerRadius = 18;
+    self.tipButton.contentEdgeInsets = UIEdgeInsetsMake(8, 12, 8, 12);
+    self.tipButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.tipButton.userInteractionEnabled = YES;
+    [self.cardView addSubview:self.tipButton];
+    
     // Add button actions
     [self.likeButton addTarget:self action:@selector(likeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [self.tipButton addTarget:self action:@selector(tipButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.playButton addTarget:self action:@selector(playButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     
     // Pin button (only shown for own posts)
     self.pinButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.pinButton setTitle:@"📌 Pin" forState:UIControlStateNormal];
-    self.pinButton.titleLabel.font = [LOLOFonts caption];
-    self.pinButton.tintColor = [LOLOColors primary];
-    self.pinButton.backgroundColor = [[LOLOColors primary] colorWithAlphaComponent:0.1];
+    self.pinButton.titleLabel.font = [LifeFonts caption];
+    self.pinButton.tintColor = [LifeColors primary];
+    self.pinButton.backgroundColor = [[LifeColors primary] colorWithAlphaComponent:0.1];
     self.pinButton.layer.cornerRadius = 12;
     self.pinButton.layer.borderWidth = 1;
-    self.pinButton.layer.borderColor = [LOLOColors primary].CGColor;
+    self.pinButton.layer.borderColor = [LifeColors primary].CGColor;
     self.pinButton.contentEdgeInsets = UIEdgeInsetsMake(6, 12, 6, 12);
     self.pinButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.pinButton.hidden = YES; // Hidden by default
@@ -171,7 +186,7 @@
     // Pinned badge (shown when post is pinned)
     self.pinnedBadge = [[UILabel alloc] init];
     self.pinnedBadge.text = @"📌 Pinned";
-    self.pinnedBadge.font = [LOLOFonts caption];
+    self.pinnedBadge.font = [LifeFonts caption];
     self.pinnedBadge.textColor = [UIColor whiteColor];
     self.pinnedBadge.backgroundColor = [UIColor systemOrangeColor];
     self.pinnedBadge.textAlignment = NSTextAlignmentCenter;
@@ -185,8 +200,8 @@
 }
 
 - (void)setupConstraints {
-    CGFloat padding = [LOLOSpacing medium];
-    CGFloat smallPadding = [LOLOSpacing small];
+    CGFloat padding = [LifeSpacing medium];
+    CGFloat smallPadding = [LifeSpacing small];
     
     [NSLayoutConstraint activateConstraints:@[
         // Card
@@ -255,9 +270,14 @@
         [self.likeButton.bottomAnchor constraintEqualToAnchor:self.cardView.bottomAnchor constant:-padding],
         [self.likeButton.heightAnchor constraintEqualToConstant:36],
         
-        // Pin button (right of like button)
+        // Tip button (right of like button)
+        [self.tipButton.centerYAnchor constraintEqualToAnchor:self.likeButton.centerYAnchor],
+        [self.tipButton.leadingAnchor constraintEqualToAnchor:self.likeButton.trailingAnchor constant:8],
+        [self.tipButton.heightAnchor constraintEqualToConstant:36],
+        
+        // Pin button (right of tip button)
         [self.pinButton.centerYAnchor constraintEqualToAnchor:self.likeButton.centerYAnchor],
-        [self.pinButton.leadingAnchor constraintEqualToAnchor:self.likeButton.trailingAnchor constant:8],
+        [self.pinButton.leadingAnchor constraintEqualToAnchor:self.tipButton.trailingAnchor constant:8],
         [self.pinButton.heightAnchor constraintEqualToConstant:36],
         
         // Pinned badge (replaces sport badge when pinned)
@@ -277,7 +297,7 @@
     
     self.usernameLabel.text = post.user.username;
     self.timeLabel.text = @"5m ago"; // TODO: Calculate from timestamp
-    self.sportBadgeLabel.text = [NSString stringWithFormat:@"  %@  ", post.sportType];
+    self.sportBadgeLabel.text = [NSString stringWithFormat:@"  %@  ", post.category];
     self.contentLabel.text = post.content;
     
     // Setup more button menu
@@ -381,12 +401,13 @@
     }
     
     // Stats
-    self.distanceLabel.text = [NSString stringWithFormat:@"🏃 %.1fkm", post.distance.doubleValue];
-    self.durationLabel.text = [NSString stringWithFormat:@"⏱ %ldmin", (long)post.duration.integerValue];
-    self.caloriesLabel.text = [NSString stringWithFormat:@"🔥 %ldcal", (long)post.calories.integerValue];
+    self.distanceLabel.text = [NSString stringWithFormat:@"🏃 %.1fkm", post.viewsCount.doubleValue];
+    self.durationLabel.text = [NSString stringWithFormat:@"⏱ %ldmin", (long)post.savesCount.integerValue];
+    self.caloriesLabel.text = [NSString stringWithFormat:@"🔥 %ldcal", (long)post.sharesCount.integerValue];
     
     // Actions
     [self.likeButton setTitle:[NSString stringWithFormat:@" %ld", (long)post.likesCount] forState:UIControlStateNormal];
+    [self.tipButton setTitle:[NSString stringWithFormat:@" %ld", (long)post.tipsCount] forState:UIControlStateNormal];
     
     // Pin UI
     BOOL isOwnPost = NO;
@@ -435,6 +456,42 @@
     DLog(@"Post %@ liked, count: %ld", self.currentPost.postId, (long)self.currentPost.likesCount);
 }
 
+- (void)tipButtonTapped:(UIButton *)sender {
+    if (!self.currentPost) return;
+    
+    // Check if user has coins
+    NSInteger currentCoins = [[DataService shared] getCurrentUserCoins];
+    if (currentCoins > 0) {
+        // Tip post (deducts coin and persists tip counts)
+        if ([[DataService shared] tipPost:self.currentPost]) {
+            // Let App know to update coins globally
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CoinsBalanceChanged" object:nil];
+            
+            // Play tip animation (simple scale bounce)
+            [UIView animateWithDuration:0.1 animations:^{
+                sender.transform = CGAffineTransformMakeScale(1.2, 1.2);
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:0.2 animations:^{
+                    sender.transform = CGAffineTransformIdentity;
+                }];
+            }];
+            
+            // Update button title
+            [sender setTitle:[NSString stringWithFormat:@" %ld", (long)self.currentPost.tipsCount] forState:UIControlStateNormal];
+            
+            DLog(@"Tipped post %@, remaining coins: %ld", self.currentPost.postId, (long)currentCoins - 1);
+        }
+    } else {
+        // Trigger buy coins flow - Ideally delegate this out, but for now we post notification or rely on delegate
+        if (self.delegate && [self.delegate respondsToSelector:@selector(feedCardCell:didTapReportForPost:)]) {
+            // Reusing report delegate temporarily, or just let user know they need coins
+            // A better way is to add a proper delegate method, but to stay within scope we just alert if possible
+            DLog(@"Not enough coins to tip");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NotEnoughCoinsForTip" object:nil];
+        }
+    }
+}
+
 - (void)setupMoreButtonMenu {
     if (!self.currentPost) return;
     
@@ -468,7 +525,9 @@
     
     UIMenu *menu = [UIMenu menuWithTitle:@"" 
                                 children:@[reportAction]];
-    moreButton.menu = menu;
+    if (@available(iOS 14.0, *)) {
+        moreButton.menu = menu;
+    }
 }
 
 - (void)moreButtonTapped:(UIButton *)sender {

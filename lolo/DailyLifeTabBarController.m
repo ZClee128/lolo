@@ -1,16 +1,16 @@
 //
-//  MainTabBarController.m
+//  DailyLifeTabBarController.m
 //  lolo
 //
 //  Created on 2026/1/30.
 //
 
-#import "MainTabBarController.h"
-#import "ObfuscationUtil.h"
+#import "DailyLifeTabBarController.h"
+
 #import "Constants.h"
 #import "ViewControllers.h"
 
-@implementation MainTabBarController
+@implementation DailyLifeTabBarController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -21,23 +21,23 @@
 
 - (void)setupTabs {
     // Home Tab
-    HVC *homeVC = [[HVC alloc] init];
+    LifeHacksFeedViewController *homeVC = [[LifeHacksFeedViewController alloc] init];
     UINavigationController *homeNav = [[UINavigationController alloc] initWithRootViewController:homeVC];
-    homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:[ObfuscationUtil decodeBytes:@[@0x08, @0x20, @0x21, @0x2A]] // "Home"
+    homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Home"
                                                        image:[UIImage systemImageNamed:@"house"]
                                                 selectedImage:[UIImage systemImageNamed:@"house.fill"]];
     
     // IM Tab
-    MVC *imVC = [[MVC alloc] init];
+    CommunityMessageViewController *imVC = [[CommunityMessageViewController alloc] init];
     UINavigationController *imNav = [[UINavigationController alloc] initWithRootViewController:imVC];
-    imNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:[ObfuscationUtil decodeBytes:@[@0x0D, @0x2A, @0x3F, @0x3C, @0x2D, @0x28, @0x29, @0x3C]] // "Messages"
+    imNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Messages"
                                                      image:[UIImage systemImageNamed:@"message"]
                                               selectedImage:[UIImage systemImageNamed:@"message.fill"]];
     
     // Profile Tab
-    PVC *profileVC = [[PVC alloc] init];
+    LifeProfileViewController *profileVC = [[LifeProfileViewController alloc] init];
     UINavigationController *profileNav = [[UINavigationController alloc] initWithRootViewController:profileVC];
-    profileNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:[ObfuscationUtil decodeBytes:@[@0x1C, @0x3D, @0x23, @0x29, @0x25, @0x23, @0x29]] // "Profile"
+    profileNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Profile"
                                                           image:[UIImage systemImageNamed:@"person"]
                                                    selectedImage:[UIImage systemImageNamed:@"person.fill"]];
     
@@ -50,15 +50,15 @@
     appearance.backgroundColor = [UIColor whiteColor];
     
     // Customize selected item color
-    appearance.stackedLayoutAppearance.selected.iconColor = [LOLOColors primary];
+    appearance.stackedLayoutAppearance.selected.iconColor = [LifeColors primary];
     appearance.stackedLayoutAppearance.selected.titleTextAttributes = @{
-        NSForegroundColorAttributeName: [LOLOColors primary]
+        NSForegroundColorAttributeName: [LifeColors primary]
     };
     
     // Customize normal item color
-    appearance.stackedLayoutAppearance.normal.iconColor = [LOLOColors textSecondary];
+    appearance.stackedLayoutAppearance.normal.iconColor = [LifeColors textSecondary];
     appearance.stackedLayoutAppearance.normal.titleTextAttributes = @{
-        NSForegroundColorAttributeName: [LOLOColors textSecondary]
+        NSForegroundColorAttributeName: [LifeColors textSecondary]
     };
     
     self.tabBar.standardAppearance = appearance;

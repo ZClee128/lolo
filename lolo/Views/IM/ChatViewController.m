@@ -41,7 +41,7 @@
     [super viewDidLoad];
     
     self.title = self.user.username;
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeNever;
     
     // Menu button
@@ -68,7 +68,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [LOLOColors background];
+    self.tableView.backgroundColor = [LifeColors background];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
@@ -83,14 +83,14 @@
     
     // Top border
     UIView *border = [[UIView alloc] init];
-    border.backgroundColor = [LOLOColors border];
+    border.backgroundColor = [LifeColors border];
     border.translatesAutoresizingMaskIntoConstraints = NO;
     [self.inputContainer addSubview:border];
     
     // Input Field
     self.inputField = [[UITextField alloc] init];
     self.inputField.placeholder = @"Message...";
-    self.inputField.font = [LOLOFonts body];
+    self.inputField.font = [LifeFonts body];
     self.inputField.borderStyle = UITextBorderStyleRoundedRect;
     self.inputField.delegate = self;
     self.inputField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -99,7 +99,7 @@
     // Send Button
     UIButton *sendButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [sendButton setImage:[UIImage systemImageNamed:@"arrow.up.circle.fill"] forState:UIControlStateNormal];
-    sendButton.tintColor = [LOLOColors primary];
+    sendButton.tintColor = [LifeColors primary];
     [sendButton addTarget:self action:@selector(sendTapped) forControlEvents:UIControlEventTouchUpInside];
     sendButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.inputContainer addSubview:sendButton];
@@ -202,7 +202,7 @@
         cell.textLabel.textColor = [UIColor blackColor];
     } else {
         cell.textLabel.textAlignment = NSTextAlignmentRight;
-        cell.textLabel.textColor = [LOLOColors primary];
+        cell.textLabel.textColor = [LifeColors primary];
     }
     
     return cell;

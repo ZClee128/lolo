@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LOLOColors : NSObject
+@interface LifeColors : NSObject
 @property (class, nonatomic, readonly) UIColor *primary;
 @property (class, nonatomic, readonly) UIColor *accent;
 @property (class, nonatomic, readonly) UIColor *background;
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, nonatomic, readonly) UIColor *lightGray;
 @end
 
-@interface LOLOFonts : NSObject
+@interface LifeFonts : NSObject
 @property (class, nonatomic, readonly) UIFont *largeTitle;
 @property (class, nonatomic, readonly) UIFont *title;
 @property (class, nonatomic, readonly) UIFont *headline;
@@ -30,20 +30,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, nonatomic, readonly) UIFont *sectionHeader;
 @end
 
-@interface LOLOSpacing : NSObject
+@interface LifeSpacing : NSObject
 @property (class, nonatomic, readonly) CGFloat small;
 @property (class, nonatomic, readonly) CGFloat medium;
 @property (class, nonatomic, readonly) CGFloat large;
 @property (class, nonatomic, readonly) CGFloat extraLarge;
 @end
 
-@interface LOLOCornerRadius : NSObject
+@interface LifeCornerRadius : NSObject
 @property (class, nonatomic, readonly) CGFloat standard;
 @property (class, nonatomic, readonly) CGFloat large;
 @property (class, nonatomic, readonly) CGFloat circle;
 @end
 
-@interface LOLOSportTypes : NSObject
+@interface LifeCategories : NSObject
 @property (class, nonatomic, readonly) NSArray<NSString *> *all;
 @property (class, nonatomic, readonly) NSArray<NSString *> *allCases;
 @end

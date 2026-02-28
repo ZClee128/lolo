@@ -1,5 +1,5 @@
 //
-//  LoloDataConnector.h
+//  LifeDataConnector.h
 //  lolo
 //
 //  Created on 2026/2/11.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol LoloDataConnectorDelegate <NSObject>
+@protocol LifeDataConnectorDelegate <NSObject>
 @optional
 - (void)connectorDidLoadProducts:(NSArray<SKProduct *> *)products;
 - (void)connectorProductsLoadFailed:(NSError *)error;
@@ -21,13 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)connectorRestoreFailed:(NSError *)error;
 @end
 
-@interface LoloDataConnector : NSObject
+@interface LifeDataConnector : NSObject
 
-@property (nonatomic, weak) id<LoloDataConnectorDelegate> delegate;
+@property (nonatomic, weak) id<LifeDataConnectorDelegate> delegate;
 @property (nonatomic, strong, readonly) NSArray<SKProduct *> *products;
 @property (nonatomic, assign, readonly) BOOL isLoading;
 
-+ (LoloDataConnector *)defaultConnector;
++ (LifeDataConnector *)defaultConnector;
 
 /// Register as payment transaction observer
 - (void)startObserving;

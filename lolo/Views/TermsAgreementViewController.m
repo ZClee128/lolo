@@ -8,7 +8,7 @@
 #import "TermsAgreementViewController.h"
 #import "TermsViewController.h"
 #import "Constants.h"
-#import "StringObfuscation.h"
+
 
 @interface TermsAgreementViewController ()
 @property (nonatomic, strong) UIButton *agreeButton;
@@ -21,14 +21,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     self.modalPresentationStyle = UIModalPresentationFullScreen;
     
     [self setupUI];
 }
 
 - (void)setupUI {
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // Scroll view for content
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
@@ -43,7 +43,7 @@
     UILabel *welcomeLabel = [[UILabel alloc] init];
     welcomeLabel.text = @"Welcome to Lolo";
     welcomeLabel.font = [UIFont systemFontOfSize:28 weight:UIFontWeightBold];
-    welcomeLabel.textColor = [LOLOColors textPrimary];
+    welcomeLabel.textColor = [LifeColors textPrimary];
     welcomeLabel.textAlignment = NSTextAlignmentCenter;
     welcomeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:welcomeLabel];
@@ -51,7 +51,7 @@
     // Icon
     UIImageView *iconView = [[UIImageView alloc] init];
     iconView.image = [UIImage systemImageNamed:@"doc.text.fill"];
-    iconView.tintColor = [LOLOColors primary];
+    iconView.tintColor = [LifeColors primary];
     iconView.contentMode = UIViewContentModeScaleAspectFit;
     iconView.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:iconView];
@@ -59,8 +59,8 @@
     // Main message
     UILabel *messageLabel = [[UILabel alloc] init];
     messageLabel.text = @"Terms of Service & Community Guidelines";
-    messageLabel.font = [LOLOFonts title];
-    messageLabel.textColor = [LOLOColors textPrimary];
+    messageLabel.font = [LifeFonts title];
+    messageLabel.textColor = [LifeColors textPrimary];
     messageLabel.textAlignment = NSTextAlignmentCenter;
     messageLabel.numberOfLines = 0;
     messageLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -69,7 +69,7 @@
     // Important notice card
     UIView *noticeCard = [[UIView alloc] init];
     noticeCard.backgroundColor = [[UIColor systemRedColor] colorWithAlphaComponent:0.1];
-    noticeCard.layer.cornerRadius = [LOLOCornerRadius standard];
+    noticeCard.layer.cornerRadius = [LifeCornerRadius standard];
     noticeCard.layer.borderColor = [UIColor systemRedColor].CGColor;
     noticeCard.layer.borderWidth = 2;
     noticeCard.translatesAutoresizingMaskIntoConstraints = NO;
@@ -77,15 +77,15 @@
     
     UILabel *importantLabel = [[UILabel alloc] init];
     importantLabel.text = @"⚠️ IMPORTANT";
-    importantLabel.font = [LOLOFonts bodyBold];
+    importantLabel.font = [LifeFonts bodyBold];
     importantLabel.textColor = [UIColor systemRedColor];
     importantLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [noticeCard addSubview:importantLabel];
     
     UILabel *noticeText = [[UILabel alloc] init];
     noticeText.text = @"We have ZERO TOLERANCE for:\n\n• Objectionable content\n• Abusive behavior\n• Harassment or bullying\n• Hate speech\n• Spam or misleading content\n\nViolations will result in immediate content removal and account termination.";
-    noticeText.font = [LOLOFonts body];
-    noticeText.textColor = [LOLOColors textPrimary];
+    noticeText.font = [LifeFonts body];
+    noticeText.textColor = [LifeColors textPrimary];
     noticeText.numberOfLines = 0;
     noticeText.translatesAutoresizingMaskIntoConstraints = NO;
     [noticeCard addSubview:noticeText];
@@ -93,15 +93,15 @@
     // Features list
     UILabel *featuresLabel = [[UILabel alloc] init];
     featuresLabel.text = @"Community Safety Features:";
-    featuresLabel.font = [LOLOFonts bodyBold];
-    featuresLabel.textColor = [LOLOColors textPrimary];
+    featuresLabel.font = [LifeFonts bodyBold];
+    featuresLabel.textColor = [LifeColors textPrimary];
     featuresLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:featuresLabel];
     
     UILabel *featuresList = [[UILabel alloc] init];
     featuresList.text = @"✓ Report inappropriate content\n✓ Block abusive users\n✓ 24-hour content review\n✓ Safe and respectful community";
-    featuresList.font = [LOLOFonts body];
-    featuresList.textColor = [LOLOColors textSecondary];
+    featuresList.font = [LifeFonts body];
+    featuresList.textColor = [LifeColors textSecondary];
     featuresList.numberOfLines = 0;
     featuresList.translatesAutoresizingMaskIntoConstraints = NO;
     [contentView addSubview:featuresList];
@@ -109,8 +109,8 @@
     // View full terms button
     self.viewTermsButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.viewTermsButton setTitle:@"View Full Terms of Service" forState:UIControlStateNormal];
-    self.viewTermsButton.titleLabel.font = [LOLOFonts body];
-    [self.viewTermsButton setTitleColor:[LOLOColors primary] forState:UIControlStateNormal];
+    self.viewTermsButton.titleLabel.font = [LifeFonts body];
+    [self.viewTermsButton setTitleColor:[LifeColors primary] forState:UIControlStateNormal];
     self.viewTermsButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewTermsButton addTarget:self action:@selector(viewTermsTapped) forControlEvents:UIControlEventTouchUpInside];
     [contentView addSubview:self.viewTermsButton];
@@ -118,8 +118,8 @@
     // Agreement text
     UILabel *agreementLabel = [[UILabel alloc] init];
     agreementLabel.text = @"By tapping 'I Agree' below, you confirm that you have read and agree to our Terms of Service and commit to maintaining a safe, respectful community.";
-    agreementLabel.font = [LOLOFonts caption];
-    agreementLabel.textColor = [LOLOColors textSecondary];
+    agreementLabel.font = [LifeFonts caption];
+    agreementLabel.textColor = [LifeColors textSecondary];
     agreementLabel.textAlignment = NSTextAlignmentCenter;
     agreementLabel.numberOfLines = 0;
     agreementLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -128,10 +128,10 @@
     // Agree button
     self.agreeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.agreeButton setTitle:@"I Agree" forState:UIControlStateNormal];
-    self.agreeButton.titleLabel.font = [LOLOFonts bodyBold];
-    self.agreeButton.backgroundColor = [LOLOColors primary];
+    self.agreeButton.titleLabel.font = [LifeFonts bodyBold];
+    self.agreeButton.backgroundColor = [LifeColors primary];
     [self.agreeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.agreeButton.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.agreeButton.layer.cornerRadius = [LifeCornerRadius standard];
     self.agreeButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.agreeButton addTarget:self action:@selector(agreeTapped) forControlEvents:UIControlEventTouchUpInside];
     [contentView addSubview:self.agreeButton];
@@ -199,12 +199,12 @@
 
 - (void)agreeTapped {
     // Save agreement to UserDefaults
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:[StringObfuscation userDefaultsKeyHasAgreedToTerms]];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasAgreedToTerms"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     // Dismiss and let app continue to main interface
     [self dismissViewControllerAnimated:YES completion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameTermsAgreed] object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TermsAgreed" object:nil];
     }];
 }
 

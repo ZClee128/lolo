@@ -8,7 +8,7 @@
 #import "UIView+Extensions.h"
 #import "Constants.h"
 
-@implementation UIView (LOLOExtensions)
+@implementation UIView (LifeExtensions)
 
 - (void)addShadowWithOpacity:(CGFloat)opacity radius:(CGFloat)radius offset:(CGSize)offset {
     self.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -25,7 +25,7 @@
 
 @end
 
-@implementation UIColor (LOLOExtensions)
+@implementation UIColor (LifeExtensions)
 
 - (instancetype)initWithHexString:(NSString *)hexString {
     NSString *hexSanitized = [hexString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -44,7 +44,7 @@
 
 @end
 
-@implementation NSDate (LOLOExtensions)
+@implementation NSDate (LifeExtensions)
 
 - (NSString *)timeAgo {
     NSCalendar *calendar = [NSCalendar currentCalendar];
@@ -81,7 +81,7 @@
 
 @end
 
-@implementation NSString (LOLOExtensions)
+@implementation NSString (LifeExtensions)
 
 - (nullable NSDate *)toDateWithFormat:(NSString *)format {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

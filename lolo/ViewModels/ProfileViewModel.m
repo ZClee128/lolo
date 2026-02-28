@@ -9,12 +9,12 @@
 #import "DataService.h"
 #import "User.h"
 #import "Post.h"
-#import "LOLOModels.h"
+#import "LifeModels.h"
 
 @interface ProfileViewModel ()
 @property (nonatomic, strong, readwrite) User *currentUser;
 @property (nonatomic, strong, readwrite) NSArray<Post *> *posts;
-@property (nonatomic, strong, readwrite) NSArray<SportRecord *> *sportRecords;
+@property (nonatomic, strong, readwrite) NSArray<HabitRecord *> *sportRecords;
 @end
 
 @implementation ProfileViewModel

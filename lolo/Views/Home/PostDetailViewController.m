@@ -75,7 +75,7 @@
     [super viewDidLoad];
     
     self.title = @"Details";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     
     [self setupUI];
     [self configureWithPost:self.post];
@@ -98,7 +98,7 @@
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.scrollView addSubview:self.contentView];
     
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // User header
     self.avatarImageView = [[UIImageView alloc] init];
@@ -109,27 +109,27 @@
     [self.contentView addSubview:self.avatarImageView];
     
     self.usernameLabel = [[UILabel alloc] init];
-    self.usernameLabel.font = [LOLOFonts bodyBold];
-    self.usernameLabel.textColor = [LOLOColors textPrimary];
+    self.usernameLabel.font = [LifeFonts bodyBold];
+    self.usernameLabel.textColor = [LifeColors textPrimary];
     self.usernameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.usernameLabel];
     
     self.timeLabel = [[UILabel alloc] init];
-    self.timeLabel.font = [LOLOFonts caption];
-    self.timeLabel.textColor = [LOLOColors textSecondary];
+    self.timeLabel.font = [LifeFonts caption];
+    self.timeLabel.textColor = [LifeColors textSecondary];
     self.timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.timeLabel];
     
     self.locationLabel = [[UILabel alloc] init];
-    self.locationLabel.font = [LOLOFonts caption];
-    self.locationLabel.textColor = [LOLOColors primary];
+    self.locationLabel.font = [LifeFonts caption];
+    self.locationLabel.textColor = [LifeColors primary];
     self.locationLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.locationLabel];
     
     // Content text
     self.contentLabel = [[UILabel alloc] init];
-    self.contentLabel.font = [LOLOFonts body];
-    self.contentLabel.textColor = [LOLOColors textPrimary];
+    self.contentLabel.font = [LifeFonts body];
+    self.contentLabel.textColor = [LifeColors textPrimary];
     self.contentLabel.numberOfLines = 0;
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.contentLabel];
@@ -137,7 +137,7 @@
     // Video container
     self.videoContainer = [[UIView alloc] init];
     self.videoContainer.backgroundColor = [UIColor blackColor];
-    self.videoContainer.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.videoContainer.layer.cornerRadius = [LifeCornerRadius standard];
     self.videoContainer.clipsToBounds = YES;
     self.videoContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.videoContainer];
@@ -146,7 +146,7 @@
     self.playPauseButton.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.9];
     self.playPauseButton.layer.cornerRadius = 30;
     [self.playPauseButton setImage:[UIImage systemImageNamed:@"play.fill"] forState:UIControlStateNormal];
-    self.playPauseButton.tintColor = [LOLOColors textPrimary];
+    self.playPauseButton.tintColor = [LifeColors textPrimary];
     [self.playPauseButton addTarget:self action:@selector(playPauseTapped) forControlEvents:UIControlEventTouchUpInside];
     self.playPauseButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.videoContainer addSubview:self.playPauseButton];
@@ -166,8 +166,8 @@
     // Comments header
     self.commentsHeaderLabel = [[UILabel alloc] init];
 //    self.commentsHeaderLabel.text = @"Comments";
-    self.commentsHeaderLabel.font = [LOLOFonts headline];
-    self.commentsHeaderLabel.textColor = [LOLOColors textPrimary];
+    self.commentsHeaderLabel.font = [LifeFonts headline];
+    self.commentsHeaderLabel.textColor = [LifeColors textPrimary];
     self.commentsHeaderLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.commentsHeaderLabel];
     

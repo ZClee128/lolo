@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UILabel *durationLabel;
 @property (nonatomic, strong) UILabel *caloriesLabel;
 @property (nonatomic, strong) UIButton *likeButton;
+@property (nonatomic, strong) UIButton *tipButton;
 @property (nonatomic, strong) UIButton *commentButton;
 @property (nonatomic, strong) UIView *cardView;
 @property (nonatomic, weak) id<FeedCardCellDelegate> delegate;

@@ -1,5 +1,5 @@
 //
-//  MainTabBarController.h
+//  DailyLifeTabBarController.h
 //  lolo
 //
 //  Created on 2026/1/30.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MainTabBarController : UITabBarController
+@interface DailyLifeTabBarController : UITabBarController
 
 @end
 

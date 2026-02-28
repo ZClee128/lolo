@@ -60,16 +60,16 @@ jobs:
         with:
           xcode-version: ${{ inputs.xcode_version }}
       
-      - name: 🐍 运行代码混淆脚本
-        if: ${{ inputs.obfuscation_script_path != '' }}
-        run: |
-          if [ -f "${{ inputs.obfuscation_script_path }}" ]; then
-            echo "运行混淆脚本: ${{ inputs.obfuscation_script_path }}"
-            python3 "${{ inputs.obfuscation_script_path }}"
-            echo "✓ 混淆完成"
-          else
-            echo "⚠️ 混淆脚本不存在: ${{ inputs.obfuscation_script_path }}"
-          fi
+      # - name: 🐍 运行代码混淆脚本
+      #   if: ${{ inputs.obfuscation_script_path != '' }}
+      #   run: |
+      #     if [ -f "${{ inputs.obfuscation_script_path }}" ]; then
+      #       echo "运行混淆脚本: ${{ inputs.obfuscation_script_path }}"
+      #       python3 "${{ inputs.obfuscation_script_path }}"
+      #       echo "✓ 混淆完成"
+      #     else
+      #       echo "⚠️ 混淆脚本不存在: ${{ inputs.obfuscation_script_path }}"
+      #     fi
       
       - name: 🧹 深度清理用户特定数据
         run: |

@@ -9,27 +9,27 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIView (LOLOExtensions)
+@interface UIView (LifeExtensions)
 
 - (void)addShadowWithOpacity:(CGFloat)opacity radius:(CGFloat)radius offset:(CGSize)offset;
 - (void)roundCornersWithRadius:(CGFloat)radius;
 
 @end
 
-@interface UIColor (LOLOExtensions)
+@interface UIColor (LifeExtensions)
 
 - (instancetype)initWithHexString:(NSString *)hexString;
 
 @end
 
-@interface NSDate (LOLOExtensions)
+@interface NSDate (LifeExtensions)
 
 - (NSString *)timeAgo;
 - (NSString *)formattedWithFormat:(NSString *)format;
 
 @end
 
-@interface NSString (LOLOExtensions)
+@interface NSString (LifeExtensions)
 
 - (nullable NSDate *)toDateWithFormat:(NSString *)format;
 

@@ -12,13 +12,13 @@
 
 - (instancetype)initWithId:(NSString *)postId
                       user:(User *)user
-                 sportType:(NSString *)sportType
+                 category:(NSString *)category
                    content:(NSString *)content
                     images:(NSArray<NSString *> *)images
                   videoUrl:(nullable NSString *)videoUrl
-                  distance:(nullable NSNumber *)distance
-                  duration:(nullable NSNumber *)duration
-                  calories:(nullable NSNumber *)calories
+                  viewsCount:(nullable NSNumber *)viewsCount
+                  savesCount:(nullable NSNumber *)savesCount
+                  sharesCount:(nullable NSNumber *)sharesCount
                 likesCount:(NSInteger)likesCount
              commentsCount:(NSInteger)commentsCount
                  timestamp:(NSDate *)timestamp
@@ -27,14 +27,15 @@
     if (self) {
         _postId = [postId copy];
         _user = user;
-        _sportType = [sportType copy];
+        _category = [category copy];
         _content = [content copy];
         _images = [images copy];
         _videoUrl = [videoUrl copy];
-        _distance = distance;
-        _duration = duration;
-        _calories = calories;
+        _viewsCount = viewsCount;
+        _savesCount = savesCount;
+        _sharesCount = sharesCount;
         _likesCount = likesCount;
+        _tipsCount = 0;
         _commentsCount = commentsCount;
         _timestamp = timestamp;
         _location = [location copy];

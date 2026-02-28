@@ -6,9 +6,9 @@
 //
 
 #import "Constants.h"
-#import "ObfuscationUtil.h"
 
-@implementation LOLOColors
+
+@implementation LifeColors
 
 + (UIColor *)primary {
     return [UIColor colorWithRed:1.0 green:0.42 blue:0.21 alpha:1.0]; // #FF6B35
@@ -40,7 +40,7 @@
 
 @end
 
-@implementation LOLOFonts
+@implementation LifeFonts
 
 + (UIFont *)largeTitle {
     return [UIFont systemFontOfSize:28 weight:UIFontWeightBold];
@@ -76,7 +76,7 @@
 
 @end
 
-@implementation LOLOSpacing
+@implementation LifeSpacing
 
 + (CGFloat)small {
     return 8.0;
@@ -96,7 +96,7 @@
 
 @end
 
-@implementation LOLOCornerRadius
+@implementation LifeCornerRadius
 
 + (CGFloat)standard {
     return 12.0;
@@ -112,26 +112,26 @@
 
 @end
 
-@implementation LOLOSportTypes
+@implementation LifeCategories
 
 + (NSArray<NSString *> *)all {
-    static NSArray<NSString *> *sportTypes = nil;
+    static NSArray<NSString *> *categories = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sportTypes = @[
-            [ObfuscationUtil decodeBytes:@[@0x12, @0x3A, @0x22, @0x21, @0x25, @0x29, @0x2B, @0x27]], // "Running"
-            [ObfuscationUtil decodeBytes:@[@0x03, @0x36, @0x2F, @0x23, @0x25, @0x26, @0x2B, @0x27]], // "Cycling"
-            [ObfuscationUtil decodeBytes:@[@0x13, @0x38, @0x25, @0x22, @0x21, @0x26, @0x27, @0x29]], // "Swimming"
-            [ObfuscationUtil decodeBytes:@[@0x02, @0x2E, @0x3F, @0x24, @0x29, @0x3B, @0x2E, @0x2F, @0x2C, @0x23]], // "Basketball"
-            [ObfuscationUtil decodeBytes:@[@0x06, @0x20, @0x23, @0x3B, @0x2E, @0x2E, @0x20, @0x23, @0x2C]], // "Football"
-            [ObfuscationUtil decodeBytes:@[@0x14, @0x2A, @0x22, @0x21, @0x25, @0x3C]], // "Tennis"
-            [ObfuscationUtil decodeBytes:@[@0x19, @0x20, @0x2B, @0x2E]], // "Yoga"
-            [ObfuscationUtil decodeBytes:@[@0x07, @0x36, @0x21]], // "Gym"
-            [ObfuscationUtil decodeBytes:@[@0x08, @0x26, @0x27, @0x26, @0x22, @0x28]], // "Hiking"
-            [ObfuscationUtil decodeBytes:@[@0x04, @0x2E, @0x22, @0x2C, @0x25, @0x29, @0x27]] // "Dancing"
+        categories = @[
+            @"Running",
+            @"Cycling",
+            @"Swimming",
+            @"Basketball",
+            @"Football",
+            @"Tennis",
+            @"Yoga",
+            @"Gym",
+            @"Hiking",
+            @"Dancing"
         ];
     });
-    return sportTypes;
+    return categories;
 }
 
 + (NSArray<NSString *> *)allCases {

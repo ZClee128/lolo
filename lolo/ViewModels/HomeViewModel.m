@@ -9,7 +9,7 @@
 #import "DataService.h"
 #import "Post.h"
 #import "User.h"
-#import "LOLOModels.h"
+#import "LifeModels.h"
 
 @interface HomeViewModel ()
 @property (nonatomic, strong, readwrite) NSArray<Post *> *posts;

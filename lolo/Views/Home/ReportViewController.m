@@ -43,7 +43,7 @@
     [super viewDidLoad];
     
     self.title = @"Report Post";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     
     // Cancel button
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" 
@@ -56,13 +56,13 @@
 }
 
 - (void)setupUI {
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // Header label
     UILabel *headerLabel = [[UILabel alloc] init];
     headerLabel.text = @"Why are you reporting this post?";
-    headerLabel.font = [LOLOFonts bodyBold];
-    headerLabel.textColor = [LOLOColors textPrimary];
+    headerLabel.font = [LifeFonts bodyBold];
+    headerLabel.textColor = [LifeColors textPrimary];
     headerLabel.numberOfLines = 0;
     headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:headerLabel];
@@ -72,7 +72,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.backgroundColor = [UIColor whiteColor];
-    self.tableView.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.tableView.layer.cornerRadius = [LifeCornerRadius standard];
     self.tableView.scrollEnabled = NO;
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"ReasonCell"];
@@ -81,18 +81,18 @@
     // Additional comments label
     UILabel *commentsLabel = [[UILabel alloc] init];
     commentsLabel.text = @"Additional comments (optional)";
-    commentsLabel.font = [LOLOFonts body];
-    commentsLabel.textColor = [LOLOColors textPrimary];
+    commentsLabel.font = [LifeFonts body];
+    commentsLabel.textColor = [LifeColors textPrimary];
     commentsLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:commentsLabel];
     
     // Text view for comments
     self.commentTextView = [[UITextView alloc] init];
-    self.commentTextView.font = [LOLOFonts body];
-    self.commentTextView.textColor = [LOLOColors textPrimary];
+    self.commentTextView.font = [LifeFonts body];
+    self.commentTextView.textColor = [LifeColors textPrimary];
     self.commentTextView.backgroundColor = [UIColor whiteColor];
-    self.commentTextView.layer.cornerRadius = [LOLOCornerRadius standard];
-    self.commentTextView.layer.borderColor = [LOLOColors border].CGColor;
+    self.commentTextView.layer.cornerRadius = [LifeCornerRadius standard];
+    self.commentTextView.layer.borderColor = [LifeColors border].CGColor;
     self.commentTextView.layer.borderWidth = 1;
     self.commentTextView.textContainerInset = UIEdgeInsetsMake(12, 12, 12, 12);
     self.commentTextView.delegate = self;
@@ -102,10 +102,10 @@
     // Submit button
     UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [submitButton setTitle:@"Submit Report" forState:UIControlStateNormal];
-    submitButton.titleLabel.font = [LOLOFonts bodyBold];
-    submitButton.backgroundColor = [LOLOColors primary];
+    submitButton.titleLabel.font = [LifeFonts bodyBold];
+    submitButton.backgroundColor = [LifeColors primary];
     [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    submitButton.layer.cornerRadius = [LOLOCornerRadius standard];
+    submitButton.layer.cornerRadius = [LifeCornerRadius standard];
     submitButton.translatesAutoresizingMaskIntoConstraints = NO;
     [submitButton addTarget:self action:@selector(submitTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:submitButton];
@@ -113,7 +113,7 @@
     // Block user button
     UIButton *blockButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [blockButton setTitle:@"Block User" forState:UIControlStateNormal];
-    blockButton.titleLabel.font = [LOLOFonts body];
+    blockButton.titleLabel.font = [LifeFonts body];
     [blockButton setTitleColor:[UIColor systemRedColor] forState:UIControlStateNormal];
     blockButton.translatesAutoresizingMaskIntoConstraints = NO;
     [blockButton addTarget:self action:@selector(blockUserTapped) forControlEvents:UIControlEventTouchUpInside];
@@ -159,8 +159,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ReasonCell" forIndexPath:indexPath];
     cell.textLabel.text = self.reportReasons[indexPath.row];
-    cell.textLabel.font = [LOLOFonts body];
-    cell.textLabel.textColor = [LOLOColors textPrimary];
+    cell.textLabel.font = [LifeFonts body];
+    cell.textLabel.textColor = [LifeColors textPrimary];
     
     if ([self.reportReasons[indexPath.row] isEqualToString:self.selectedReason]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;

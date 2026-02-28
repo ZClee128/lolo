@@ -2,7 +2,7 @@
 //  Activity.h
 //  Venue.h
 //  Conversation.h
-//  SportRecord.h
+//  HabitRecord.h
 //  lolo
 //
 //  Created on 2026/1/30.
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *activityDescription;
 @property (nonatomic, copy) NSString *coverImage;
-@property (nonatomic, copy) NSString *sportType;
+@property (nonatomic, copy) NSString *category;
 @property (nonatomic, copy) NSString *location;
 @property (nonatomic, strong) NSDate *startTime;
 @property (nonatomic, strong) NSDate *endTime;
@@ -33,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *venueId;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *image;
-@property (nonatomic, copy) NSArray<NSString *> *sportTypes;
-@property (nonatomic, assign) double distance;
+@property (nonatomic, copy) NSArray<NSString *> *categories;
+@property (nonatomic, assign) double viewsCount;
 @property (nonatomic, assign) double rating;
 @property (nonatomic, copy) NSString *address;
 @property (nonatomic, assign) double latitude;
@@ -49,13 +49,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger unreadCount;
 @end
 
-// SportRecord
-@interface SportRecord : NSObject
+// HabitRecord
+@interface HabitRecord : NSObject
 @property (nonatomic, copy) NSString *recordId;
-@property (nonatomic, copy) NSString *sportType;
-@property (nonatomic, assign) NSInteger duration;
-@property (nonatomic, strong, nullable) NSNumber *distance;
-@property (nonatomic, assign) NSInteger calories;
+@property (nonatomic, copy) NSString *category;
+@property (nonatomic, assign) NSInteger savesCount;
+@property (nonatomic, strong, nullable) NSNumber *viewsCount;
+@property (nonatomic, assign) NSInteger sharesCount;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, copy, nullable) NSString *notes;
 @property (nonatomic, copy) NSArray<NSString *> *images;

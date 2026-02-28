@@ -1,5 +1,5 @@
 //
-//  PVC.m (Updated with ProfileHeaderView)
+//  LifeProfileViewController.m (Updated with ProfileHeaderView)
 //  lolo
 //
 //  Created on 2026/2/3.
@@ -14,19 +14,19 @@
 #import "Post.h"
 #import "SettingsViewController.h"
 
-@interface PVC () <UITableViewDelegate, UITableViewDataSource>
+@interface LifeProfileViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) ProfileViewModel *viewModel;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) ProfileHeaderView *headerView;
 @end
 
-@implementation PVC
+@implementation LifeProfileViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"Profile";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     
     // Add settings button
@@ -34,7 +34,7 @@
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(settingsTapped)];
-    settingsButton.tintColor = [LOLOColors primary];
+    settingsButton.tintColor = [LifeColors primary];
     self.navigationItem.rightBarButtonItem = settingsButton;
     
     // Initialize ViewModel
@@ -63,7 +63,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [LOLOColors background];
+    self.tableView.backgroundColor = [LifeColors background];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.estimatedRowHeight = 400;

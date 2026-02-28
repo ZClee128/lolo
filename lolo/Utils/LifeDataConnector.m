@@ -1,26 +1,26 @@
 //
-//  LoloDataConnector.m
+//  LifeDataConnector.m
 //  lolo
 //
 //  Created on 2026/2/11.
 //
 
-#import "LoloDataConnector.h"
+#import "LifeDataConnector.h"
 #import "DataService.h"
 
-@interface LoloDataConnector () <SKProductsRequestDelegate, SKPaymentTransactionObserver>
+@interface LifeDataConnector () <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 @property (nonatomic, strong) NSArray<SKProduct *> *products;
 @property (nonatomic, strong) SKProductsRequest *productsRequest;
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *coinValueMap;
 @end
 
-@implementation LoloDataConnector
+@implementation LifeDataConnector
 
 #pragma mark - Singleton
 
-+ (LoloDataConnector *)defaultConnector {
-    static LoloDataConnector *sharedInstance = nil;
++ (LifeDataConnector *)defaultConnector {
+    static LifeDataConnector *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
@@ -220,13 +220,13 @@
     // Get the app receipt from the bundle
     NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
     if (!receiptURL) {
-        NSLog(@"[LoloDataConnector] No receipt URL found");
+        NSLog(@"[LifeDataConnector] No receipt URL found");
         return NO;
     }
     
     NSData *receiptData = [NSData dataWithContentsOfURL:receiptURL];
     if (!receiptData || receiptData.length == 0) {
-        NSLog(@"[LoloDataConnector] No receipt data found");
+        NSLog(@"[LifeDataConnector] No receipt data found");
         return NO;
     }
     
@@ -236,13 +236,13 @@
     
     // Verify the transaction has valid identifiers
     if (!transaction.payment.productIdentifier || transaction.payment.productIdentifier.length == 0) {
-        NSLog(@"[LoloDataConnector] Invalid product identifier in transaction");
+        NSLog(@"[LifeDataConnector] Invalid product identifier in transaction");
         return NO;
     }
     
     // Verify the transaction identifier exists
     if (!transaction.transactionIdentifier || transaction.transactionIdentifier.length == 0) {
-        NSLog(@"[LoloDataConnector] Invalid transaction identifier");
+        NSLog(@"[LifeDataConnector] Invalid transaction identifier");
         return NO;
     }
     

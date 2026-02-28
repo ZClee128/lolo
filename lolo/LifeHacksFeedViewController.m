@@ -1,5 +1,5 @@
 //
-//  HVC.m (Updated with navigation)
+//  LifeHacksFeedViewController.m (Updated with navigation)
 //  lolo
 //
 //  Created on 2026/2/3.
@@ -13,28 +13,28 @@
 #import "Views/Home/PostDetailViewController.h"
 #import "Views/Home/CreatePostViewController.h"
 #import "Views/Home/ReportViewController.h"
-#import "Views/LoloWalletDetailView.h"
+#import "Views/PremiumSubscriptionView.h"
 #import "ViewModels/HomeViewModel.h"
 #import "DataService.h"
 
-@interface HVC () <UITableViewDelegate, UITableViewDataSource, FeedCardCellDelegate>
+@interface LifeHacksFeedViewController () <UITableViewDelegate, UITableViewDataSource, FeedCardCellDelegate>
 @property (nonatomic, strong) HomeViewModel *viewModel;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *headerLabel;
 @end
 
-@implementation HVC
+@implementation LifeHacksFeedViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"Home";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     
     // Add + button
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(createPostTapped)];
-    addButton.tintColor = [LOLOColors primary];
+    addButton.tintColor = [LifeColors primary];
     self.navigationItem.rightBarButtonItem = addButton;
     
     // Initialize ViewModel
@@ -46,13 +46,23 @@
     
     // Load data
     [self.viewModel loadData];
+    
+    // Listen for not enough coins notification
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleNotEnoughCoins:)
+                                                 name:@"NotEnoughCoinsForTip"
+                                               object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupTableView {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [LOLOColors background];
+    self.tableView.backgroundColor = [LifeColors background];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.tableView.estimatedRowHeight = 400;
@@ -60,12 +70,12 @@
     
     // Header
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 50)];
-    headerView.backgroundColor = [LOLOColors background];
+    headerView.backgroundColor = [LifeColors background];
     self.headerLabel = [[UILabel alloc] init];
     self.headerLabel.text = @"Activity Feed";
     self.headerLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightSemibold];
-    self.headerLabel.textColor = [LOLOColors textPrimary];
-    self.headerLabel.frame = CGRectMake([LOLOSpacing medium], 15, self.view.bounds.size.width - 2*[LOLOSpacing medium], 30);
+    self.headerLabel.textColor = [LifeColors textPrimary];
+    self.headerLabel.frame = CGRectMake([LifeSpacing medium], 15, self.view.bounds.size.width - 2*[LifeSpacing medium], 30);
     [headerView addSubview:self.headerLabel];
     self.tableView.tableHeaderView = headerView;
     
@@ -117,7 +127,7 @@
     Post *post = self.viewModel.posts[indexPath.row];
     
     // Debug: Print post info
-    NSLog(@"[HVC] Selected post at index %ld: ID=%@, User=%@, Content=%@", 
+    NSLog(@"[LifeHacksFeedViewController] Selected post at index %ld: ID=%@, User=%@, Content=%@", 
           (long)indexPath.row, post.postId, post.user.username, 
           [post.content substringToIndex:MIN(30, post.content.length)]);
     
@@ -183,7 +193,7 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
         [alert addAction:[UIAlertAction actionWithTitle:@"Buy Coins" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            LoloWalletDetailView *storeVC = [[LoloWalletDetailView alloc] init];
+            PremiumSubscriptionView *storeVC = [[PremiumSubscriptionView alloc] init];
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
             [self presentViewController:nav animated:YES completion:nil];
         }]];
@@ -197,8 +207,8 @@
     [confirmAlert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     [confirmAlert addAction:[UIAlertAction actionWithTitle:@"Pin 24h" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         if ([[DataService shared] deductCoins:COINS_FOR_PIN]) {
-            NSTimeInterval duration = PIN_DURATION_HOURS * 3600;
-            [[DataService shared] pinPost:post duration:duration];
+            NSTimeInterval savesCount = PIN_DURATION_HOURS * 3600;
+            [[DataService shared] pinPost:post savesCount:savesCount];
             [self.viewModel loadData];
             
             UIAlertController *successAlert = [UIAlertController alertControllerWithTitle:@"✅ Post Pinned!"
@@ -227,6 +237,19 @@
                               atScrollPosition:UITableViewScrollPositionTop
                                       animated:YES];
     }
+}
+
+- (void)handleNotEnoughCoins:(NSNotification *)notification {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Insufficient Coins"
+                                                                   message:@"You don't have enough coins to tip. Would you like to recharge?"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Buy Coins" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        PremiumSubscriptionView *storeVC = [[PremiumSubscriptionView alloc] init];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
+        [self presentViewController:nav animated:YES completion:nil];
+    }]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

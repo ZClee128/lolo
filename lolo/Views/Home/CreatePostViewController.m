@@ -11,9 +11,9 @@
 #import "Post.h"
 #import "User.h" 
 #import "DataService.h"
-#import "LoloWalletDetailView.h"
+#import "PremiumSubscriptionView.h"
 #import <PhotosUI/PhotosUI.h>
-#import "StringObfuscation.h"
+
 
 #define COINS_PER_POST 0  // Posting is now FREE - coins used for other features
 
@@ -26,7 +26,7 @@
 @property (nonatomic, strong) UITextField *distanceField;
 @property (nonatomic, strong) UITextField *durationField;
 @property (nonatomic, strong) UITextField *caloriesField;
-@property (nonatomic, strong) NSArray<NSString *> *sportTypes;
+@property (nonatomic, strong) NSArray<NSString *> *categories;
 @property (nonatomic, strong) UIButton *addMediaButton;
 @property (nonatomic, strong) UIImageView *mediaPreviewImageView;
 @property (nonatomic, strong) UIImage *selectedImage;
@@ -39,10 +39,10 @@
     [super viewDidLoad];
     
     self.title = @"Create Post";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     
     // Sport types for segmented control
-    self.sportTypes = @[@"Running", @"Cycling", @"Swimming"];
+    self.categories = @[@"Running", @"Cycling", @"Swimming"];
     
     // Navigation buttons
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" 
@@ -59,8 +59,8 @@
     
     // Coins label in navigation bar
     self.coinsLabel = [[UILabel alloc] init];
-    self.coinsLabel.font = [LOLOFonts caption];
-    self.coinsLabel.textColor = [LOLOColors textPrimary];
+    self.coinsLabel.font = [LifeFonts caption];
+    self.coinsLabel.textColor = [LifeColors textPrimary];
     [self updateCoinsLabel];
     self.navigationItem.titleView = self.coinsLabel;
     
@@ -69,7 +69,7 @@
     // Listen for coins balance changes
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateCoinsLabel)
-                                                 name:[StringObfuscation notificationNameCoinsBalanceChanged]
+                                                 name:@"CoinsBalanceChanged"
                                                object:nil];
     
     // Keyboard observation
@@ -84,7 +84,7 @@
 }
 
 - (void)setupUI {
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // Scroll view
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
@@ -99,13 +99,13 @@
     // Sport Type Label
     UILabel *sportTypeLabel = [[UILabel alloc] init];
     sportTypeLabel.text = @"Sport Type";
-    sportTypeLabel.font = [LOLOFonts bodyBold];
-    sportTypeLabel.textColor = [LOLOColors textPrimary];
+    sportTypeLabel.font = [LifeFonts bodyBold];
+    sportTypeLabel.textColor = [LifeColors textPrimary];
     sportTypeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:sportTypeLabel];
     
     // Segmented Control
-    self.sportTypeControl = [[UISegmentedControl alloc] initWithItems:self.sportTypes];
+    self.sportTypeControl = [[UISegmentedControl alloc] initWithItems:self.categories];
     self.sportTypeControl.selectedSegmentIndex = 0;
     self.sportTypeControl.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.sportTypeControl];
@@ -113,18 +113,18 @@
     // Experience Label
     UILabel *experienceLabel = [[UILabel alloc] init];
     experienceLabel.text = @"Share your experience";
-    experienceLabel.font = [LOLOFonts bodyBold];
-    experienceLabel.textColor = [LOLOColors textPrimary];
+    experienceLabel.font = [LifeFonts bodyBold];
+    experienceLabel.textColor = [LifeColors textPrimary];
     experienceLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:experienceLabel];
     
     // Experience TextView
     self.experienceTextView = [[UITextView alloc] init];
-    self.experienceTextView.font = [LOLOFonts body];
-    self.experienceTextView.textColor = [LOLOColors textPrimary];
+    self.experienceTextView.font = [LifeFonts body];
+    self.experienceTextView.textColor = [LifeColors textPrimary];
     self.experienceTextView.backgroundColor = [UIColor whiteColor];
-    self.experienceTextView.layer.cornerRadius = [LOLOCornerRadius standard];
-    self.experienceTextView.layer.borderColor = [LOLOColors border].CGColor;
+    self.experienceTextView.layer.cornerRadius = [LifeCornerRadius standard];
+    self.experienceTextView.layer.borderColor = [LifeColors border].CGColor;
     self.experienceTextView.layer.borderWidth = 1;
     self.experienceTextView.textContainerInset = UIEdgeInsetsMake(12, 12, 12, 12);
     self.experienceTextView.delegate = self;
@@ -133,18 +133,18 @@
     
     self.placeholderLabel = [[UILabel alloc] init];
     self.placeholderLabel.text = @"Share your experience...";
-    self.placeholderLabel.font = [LOLOFonts body];
-    self.placeholderLabel.textColor = [LOLOColors textSecondary];
+    self.placeholderLabel.font = [LifeFonts body];
+    self.placeholderLabel.textColor = [LifeColors textSecondary];
     self.placeholderLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.experienceTextView addSubview:self.placeholderLabel];
     
     // Add Media Button
     self.addMediaButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.addMediaButton setTitle:@"📷 Add Photo or Video" forState:UIControlStateNormal];
-    self.addMediaButton.titleLabel.font = [LOLOFonts bodyBold];
-    self.addMediaButton.backgroundColor = [LOLOColors primary];
+    self.addMediaButton.titleLabel.font = [LifeFonts bodyBold];
+    self.addMediaButton.backgroundColor = [LifeColors primary];
     [self.addMediaButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.addMediaButton.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.addMediaButton.layer.cornerRadius = [LifeCornerRadius standard];
     self.addMediaButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.addMediaButton addTarget:self action:@selector(addMediaButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.addMediaButton];
@@ -153,7 +153,7 @@
     self.mediaPreviewImageView = [[UIImageView alloc] init];
     self.mediaPreviewImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.mediaPreviewImageView.clipsToBounds = YES;
-    self.mediaPreviewImageView.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.mediaPreviewImageView.layer.cornerRadius = [LifeCornerRadius standard];
     self.mediaPreviewImageView.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
     self.mediaPreviewImageView.hidden = YES;
     self.mediaPreviewImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -162,23 +162,23 @@
     // Stats Label
     UILabel *statsLabel = [[UILabel alloc] init];
     statsLabel.text = @"Stats (Optional)";
-    statsLabel.font = [LOLOFonts bodyBold];
-    statsLabel.textColor = [LOLOColors textPrimary];
+    statsLabel.font = [LifeFonts bodyBold];
+    statsLabel.textColor = [LifeColors textPrimary];
     statsLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:statsLabel];
     
-    // Distance Field
-    self.distanceField = [self createTextField:@"Distance (km)"];
+    // ViewsCount Field
+    self.distanceField = [self createTextField:@"ViewsCount (km)"];
     self.distanceField.keyboardType = UIKeyboardTypeDecimalPad;
     [self.contentView addSubview:self.distanceField];
     
-    // Duration Field
-    self.durationField = [self createTextField:@"Duration (min)"];
+    // SavesCount Field
+    self.durationField = [self createTextField:@"SavesCount (min)"];
     self.durationField.keyboardType = UIKeyboardTypeNumberPad;
     [self.contentView addSubview:self.durationField];
     
-    // Calories Field
-    self.caloriesField = [self createTextField:@"Calories"];
+    // SharesCount Field
+    self.caloriesField = [self createTextField:@"SharesCount"];
     self.caloriesField.keyboardType = UIKeyboardTypeNumberPad;
     [self.contentView addSubview:self.caloriesField];
     
@@ -242,11 +242,11 @@
 - (UITextField *)createTextField:(NSString *)placeholder {
     UITextField *textField = [[UITextField alloc] init];
     textField.placeholder = placeholder;
-    textField.font = [LOLOFonts body];
-    textField.textColor = [LOLOColors textPrimary];
+    textField.font = [LifeFonts body];
+    textField.textColor = [LifeColors textPrimary];
     textField.backgroundColor = [UIColor whiteColor];
-    textField.layer.cornerRadius = [LOLOCornerRadius standard];
-    textField.layer.borderColor = [LOLOColors border].CGColor;
+    textField.layer.cornerRadius = [LifeCornerRadius standard];
+    textField.layer.borderColor = [LifeColors border].CGColor;
     textField.layer.borderWidth = 1;
     textField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 16, 0)];
     textField.leftViewMode = UITextFieldViewModeAlways;
@@ -335,15 +335,15 @@
         return;
     }
     
-    NSString *sportType = self.sportTypes[self.sportTypeControl.selectedSegmentIndex];
+    NSString *category = self.categories[self.sportTypeControl.selectedSegmentIndex];
     
     // Get current user
     User *currentUser = [[DataService shared] getCurrentUser];
     
     // Parse stats
-    NSNumber *distance = self.distanceField.text.length > 0 ? @([self.distanceField.text doubleValue]) : @0;
-    NSNumber *duration = self.durationField.text.length > 0 ? @([self.durationField.text integerValue]) : @0;
-    NSNumber *calories = self.caloriesField.text.length > 0 ? @([self.caloriesField.text integerValue]) : @0;
+    NSNumber *viewsCount = self.distanceField.text.length > 0 ? @([self.distanceField.text doubleValue]) : @0;
+    NSNumber *savesCount = self.durationField.text.length > 0 ? @([self.durationField.text integerValue]) : @0;
+    NSNumber *sharesCount = self.caloriesField.text.length > 0 ? @([self.caloriesField.text integerValue]) : @0;
     
     // Save image to disk if user uploaded one
     NSString *savedImagePath = nil;
@@ -354,13 +354,13 @@
     // Create new post
     Post *newPost = [[Post alloc] initWithId:[[NSUUID UUID] UUIDString]
                                         user:currentUser
-                                   sportType:sportType
+                                   category:category
                                      content:content
                                       images:savedImagePath ? @[savedImagePath] : @[@"placeholder.jpg" /* Using local asset instead of external URL */]
                                     videoUrl:nil
-                                    distance:distance
-                                    duration:duration
-                                    calories:calories
+                                    viewsCount:viewsCount
+                                    savesCount:savesCount
+                                    sharesCount:sharesCount
                                   likesCount:0
                                commentsCount:0
                                    timestamp:[NSDate date]
@@ -378,7 +378,7 @@
         DLog(@"Failed to deduct coins!");
     }
     
-    DLog(@"Created post: %@, Sport: %@. Deducted %d coins.", content, sportType, COINS_PER_POST);
+    DLog(@"Created post: %@, Sport: %@. Deducted %d coins.", content, category, COINS_PER_POST);
     
     // Notify delegate
     if (self.delegate && [self.delegate respondsToSelector:@selector(createPostViewController:didCreatePost:)]) {
@@ -441,7 +441,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     
     [alert addAction:[UIAlertAction actionWithTitle:@"Buy Coins" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        LoloWalletDetailView *storeVC = [[LoloWalletDetailView alloc] init];
+        PremiumSubscriptionView *storeVC = [[PremiumSubscriptionView alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
         [self presentViewController:nav animated:YES completion:nil];
     }]];

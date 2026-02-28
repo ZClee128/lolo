@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *postId;
 @property (nonatomic, strong) User *user;
-@property (nonatomic, copy) NSString *sportType;
+@property (nonatomic, copy) NSString *category;
 @property (nonatomic, copy) NSString *content;
 @property (nonatomic, copy) NSArray<NSString *> *images;
 @property (nonatomic, copy, nullable) NSString *videoUrl;
@@ -24,10 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isPinned;
 @property (nonatomic, strong, nullable) NSDate *pinnedUntil;
 
-@property (nonatomic, strong, nullable) NSNumber *distance; // in km
-@property (nonatomic, strong, nullable) NSNumber *duration; // in minutes
-@property (nonatomic, strong, nullable) NSNumber *calories;
+@property (nonatomic, strong, nullable) NSNumber *viewsCount; // in km
+@property (nonatomic, strong, nullable) NSNumber *savesCount; // in minutes
+@property (nonatomic, strong, nullable) NSNumber *sharesCount;
 @property (nonatomic, assign) NSInteger likesCount;
+@property (nonatomic, assign) NSInteger tipsCount;
 @property (nonatomic, assign) NSInteger commentsCount;
 @property (nonatomic, strong) NSDate *timestamp;
 @property (nonatomic, copy, nullable) NSString *location;
@@ -42,13 +43,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithId:(NSString *)postId
                       user:(User *)user
-                 sportType:(NSString *)sportType
+                 category:(NSString *)category
                    content:(NSString *)content
                     images:(NSArray<NSString *> *)images
                   videoUrl:(nullable NSString *)videoUrl
-                  distance:(nullable NSNumber *)distance
-                  duration:(nullable NSNumber *)duration
-                  calories:(nullable NSNumber *)calories
+                  viewsCount:(nullable NSNumber *)viewsCount
+                  savesCount:(nullable NSNumber *)savesCount
+                  sharesCount:(nullable NSNumber *)sharesCount
                 likesCount:(NSInteger)likesCount
              commentsCount:(NSInteger)commentsCount
                  timestamp:(NSDate *)timestamp

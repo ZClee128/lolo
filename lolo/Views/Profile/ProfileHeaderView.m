@@ -10,8 +10,8 @@
 #import "Constants.h"
 #import "ImageLoader.h"
 #import "DataService.h"
-#import "LoloWalletDetailView.h"
-#import "StringObfuscation.h"
+#import "PremiumSubscriptionView.h"
+
 
 @interface ProfileHeaderView ()
 @property (nonatomic, strong) UIImageView *avatarImageView;
@@ -36,13 +36,13 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [LOLOColors background];
+        self.backgroundColor = [LifeColors background];
         [self setupUI];
         
         // Listen for coins balance changes
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(updateCoinsBalance)
-                                                     name:[StringObfuscation notificationNameCoinsBalanceChanged]
+                                                     name:@"CoinsBalanceChanged"
                                                    object:nil];
     }
     return self;
@@ -53,7 +53,7 @@
 }
 
 - (void)setupUI {
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // Avatar
     self.avatarImageView = [[UIImageView alloc] init];
@@ -65,8 +65,8 @@
     
     // Name
     self.nameLabel = [[UILabel alloc] init];
-    self.nameLabel.font = [LOLOFonts title];
-    self.nameLabel.textColor = [LOLOColors textPrimary];
+    self.nameLabel.font = [LifeFonts title];
+    self.nameLabel.textColor = [LifeColors textPrimary];
     self.nameLabel.textAlignment = NSTextAlignmentCenter;
     self.nameLabel.numberOfLines = 2; // Allow wrapping for long names
     self.nameLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -76,8 +76,8 @@
     
     // Bio
     self.bioLabel = [[UILabel alloc] init];
-    self.bioLabel.font = [LOLOFonts body];
-    self.bioLabel.textColor = [LOLOColors textSecondary];
+    self.bioLabel.font = [LifeFonts body];
+    self.bioLabel.textColor = [LifeColors textSecondary];
     self.bioLabel.textAlignment = NSTextAlignmentCenter;
     self.bioLabel.numberOfLines = 2;
     self.bioLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -120,24 +120,24 @@
     // Coins display and buy button
     UIView *coinsContainer = [[UIView alloc] init];
     coinsContainer.backgroundColor = [UIColor whiteColor];
-    coinsContainer.layer.cornerRadius = [LOLOCornerRadius standard];
-    coinsContainer.layer.borderColor = [LOLOColors primary].CGColor;
+    coinsContainer.layer.cornerRadius = [LifeCornerRadius standard];
+    coinsContainer.layer.borderColor = [LifeColors primary].CGColor;
     coinsContainer.layer.borderWidth = 2;
     coinsContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:coinsContainer];
     
     self.coinsLabel = [[UILabel alloc] init];
     self.coinsLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightBold];
-    self.coinsLabel.textColor = [LOLOColors textPrimary];
+    self.coinsLabel.textColor = [LifeColors textPrimary];
     self.coinsLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [coinsContainer addSubview:self.coinsLabel];
     
     self.buyCoinsButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.buyCoinsButton setTitle:@"Buy Coins" forState:UIControlStateNormal];
-    self.buyCoinsButton.titleLabel.font = [LOLOFonts bodyBold];
-    self.buyCoinsButton.backgroundColor = [LOLOColors primary];
+    self.buyCoinsButton.titleLabel.font = [LifeFonts bodyBold];
+    self.buyCoinsButton.backgroundColor = [LifeColors primary];
     [self.buyCoinsButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.buyCoinsButton.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.buyCoinsButton.layer.cornerRadius = [LifeCornerRadius standard];
     self.buyCoinsButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.buyCoinsButton addTarget:self action:@selector(buyCoinsButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [coinsContainer addSubview:self.buyCoinsButton];
@@ -147,7 +147,7 @@
     // Stats card
     self.statsCard = [[UIView alloc] init];
     self.statsCard.backgroundColor = [UIColor whiteColor];
-    self.statsCard.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.statsCard.layer.cornerRadius = [LifeCornerRadius standard];
     self.statsCard.layer.shadowColor = [UIColor blackColor].CGColor;
     self.statsCard.layer.shadowOffset = CGSizeMake(0, 2);
     self.statsCard.layer.shadowOpacity = 0.1;
@@ -159,7 +159,7 @@
     UILabel *statsTitle = [[UILabel alloc] init];
     statsTitle.text = @"";
     statsTitle.font = [UIFont systemFontOfSize:16 weight:UIFontWeightSemibold];
-    statsTitle.textColor = [LOLOColors textPrimary];
+    statsTitle.textColor = [LifeColors textPrimary];
     statsTitle.translatesAutoresizingMaskIntoConstraints = NO;
     [self.statsCard addSubview:statsTitle];
     
@@ -170,8 +170,8 @@
     statsStack.translatesAutoresizingMaskIntoConstraints = NO;
     [self.statsCard addSubview:statsStack];
     
-    UIView *distanceView = [self createStatsItemView:@"🏃" value:@"2847.5 km" label:@"Distance"];
-    UIView *caloriesView = [self createStatsItemView:@"🔥" value:@"145230 cal" label:@"Calories"];
+    UIView *distanceView = [self createStatsItemView:@"🏃" value:@"2847.5 km" label:@"ViewsCount"];
+    UIView *caloriesView = [self createStatsItemView:@"🔥" value:@"145230 cal" label:@"SharesCount"];
     UIView *workoutsView = [self createStatsItemView:@"💪" value:@"386" label:@"Workouts"];
     [statsStack addArrangedSubview:distanceView];
     [statsStack addArrangedSubview:caloriesView];
@@ -238,15 +238,15 @@
     UILabel *valueLabel = [[UILabel alloc] init];
     valueLabel.text = value;
     valueLabel.font = [UIFont systemFontOfSize:20 weight:UIFontWeightBold];
-    valueLabel.textColor = [LOLOColors textPrimary];
+    valueLabel.textColor = [LifeColors textPrimary];
     valueLabel.textAlignment = NSTextAlignmentCenter;
     valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [view addSubview:valueLabel];
     
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = label;
-    titleLabel.font = [LOLOFonts body];
-    titleLabel.textColor = [LOLOColors textSecondary];
+    titleLabel.font = [LifeFonts body];
+    titleLabel.textColor = [LifeColors textSecondary];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [view addSubview:titleLabel];
@@ -278,15 +278,15 @@
     UILabel *valueLabel = [[UILabel alloc] init];
     valueLabel.text = value;
     valueLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightBold];
-    valueLabel.textColor = [LOLOColors primary];
+    valueLabel.textColor = [LifeColors primary];
     valueLabel.textAlignment = NSTextAlignmentCenter;
     valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [view addSubview:valueLabel];
     
    UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = label;
-    titleLabel.font = [LOLOFonts caption];
-    titleLabel.textColor = [LOLOColors textSecondary];
+    titleLabel.font = [LifeFonts caption];
+    titleLabel.textColor = [LifeColors textSecondary];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [view addSubview:titleLabel];
@@ -309,9 +309,9 @@
     self.followersLabel.text = [NSString stringWithFormat:@"%ld", (long)user.followersCount];
     self.followingLabel.text = [NSString stringWithFormat:@"%ld", (long)user.followingCount];
     
-    self.distanceValueLabel.text = [NSString stringWithFormat:@"%.1f km", user.totalDistance];
-    self.caloriesValueLabel.text = [NSString stringWithFormat:@"%ld cal", (long)user.totalCalories];
-    self.workoutsValueLabel.text = [NSString stringWithFormat:@"%ld", (long)user.totalWorkouts];
+    self.distanceValueLabel.text = [NSString stringWithFormat:@"%.1f km", user.totalViews];
+    self.caloriesValueLabel.text = [NSString stringWithFormat:@"%ld cal", (long)user.totalShares];
+    self.workoutsValueLabel.text = [NSString stringWithFormat:@"%ld", (long)user.totalTips];
     
     [self.avatarImageView loadImageFromURLString:user.avatar 
                                       placeholder:@"person.circle.fill" 
@@ -335,7 +335,7 @@
 
 - (void)buyCoinsButtonTapped {
     if (self.parentViewController) {
-        LoloWalletDetailView *storeVC = [[LoloWalletDetailView alloc] init];
+        PremiumSubscriptionView *storeVC = [[PremiumSubscriptionView alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:storeVC];
         [self.parentViewController presentViewController:nav animated:YES completion:nil];
     }

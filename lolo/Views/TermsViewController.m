@@ -27,7 +27,7 @@
 }
 
 - (void)setupUI {
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // Scroll view
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
@@ -38,7 +38,7 @@
     self.termsTextView = [[UITextView alloc] init];
     self.termsTextView.editable = NO;
     self.termsTextView.font = [UIFont systemFontOfSize:14];
-    self.termsTextView.textColor = [LOLOColors textPrimary];
+    self.termsTextView.textColor = [LifeColors textPrimary];
     self.termsTextView.text = [self termsText];
     self.termsTextView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.scrollView addSubview:self.termsTextView];
@@ -46,10 +46,10 @@
     // Accept button
     self.acceptButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.acceptButton setTitle:@"Accept and Continue" forState:UIControlStateNormal];
-    self.acceptButton.titleLabel.font = [LOLOFonts bodyBold];
-    self.acceptButton.backgroundColor = [LOLOColors primary];
+    self.acceptButton.titleLabel.font = [LifeFonts bodyBold];
+    self.acceptButton.backgroundColor = [LifeColors primary];
     [self.acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.acceptButton.layer.cornerRadius = [LOLOCornerRadius standard];
+    self.acceptButton.layer.cornerRadius = [LifeCornerRadius standard];
     self.acceptButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.acceptButton addTarget:self action:@selector(acceptTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.acceptButton];
@@ -57,8 +57,8 @@
     // Decline button
     self.declineButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.declineButton setTitle:@"Decline" forState:UIControlStateNormal];
-    self.declineButton.titleLabel.font = [LOLOFonts body];
-    [self.declineButton setTitleColor:[LOLOColors textSecondary] forState:UIControlStateNormal];
+    self.declineButton.titleLabel.font = [LifeFonts body];
+    [self.declineButton setTitleColor:[LifeColors textSecondary] forState:UIControlStateNormal];
     self.declineButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.declineButton addTarget:self action:@selector(declineTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.declineButton];

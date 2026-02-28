@@ -1,28 +1,28 @@
 //
-//  LoloWalletDetailView.m
+//  PremiumSubscriptionView.m
 //  lolo
 //
 //  Created on 2026/2/11.
 //
 
-#import "LoloWalletDetailView.h"
-#import "LoloDataConnector.h"
+#import "PremiumSubscriptionView.h"
+#import "LifeDataConnector.h"
 #import "DataService.h"
 #import "Constants.h"
-#import "StringObfuscation.h"
 
-@interface LoloWalletDetailView () <UITableViewDelegate, UITableViewDataSource, LoloDataConnectorDelegate>
+
+@interface PremiumSubscriptionView () <UITableViewDelegate, UITableViewDataSource, LifeDataConnectorDelegate>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UILabel *balanceLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) NSArray<SKProduct *> *products;
 @end
 
-@implementation LoloWalletDetailView
+@implementation PremiumSubscriptionView
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     
     // Close button
     UIBarButtonItem *close = [[UIBarButtonItem alloc] initWithTitle:@"Back"
@@ -34,12 +34,12 @@
     [self setupUI];
     [self updateBalance];
     
-    [LoloDataConnector defaultConnector].delegate = self;
-    [[LoloDataConnector defaultConnector] loadProducts];
+    [LifeDataConnector defaultConnector].delegate = self;
+    [[LifeDataConnector defaultConnector] loadProducts];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateBalance)
-                                                 name:[StringObfuscation notificationNameCoinsBalanceChanged]
+                                                 name:@"CoinsBalanceChanged"
                                                object:nil];
 }
 
@@ -50,12 +50,12 @@
 - (void)setupUI {
     // Header
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 80)];
-    header.backgroundColor = [LOLOColors primary];
+    header.backgroundColor = [LifeColors primary];
     [self.view addSubview:header];
     
     UILabel *title = [[UILabel alloc] init];
     title.text = @"Account Wallet";
-    title.font = [LOLOFonts body];
+    title.font = [LifeFonts body];
     title.textColor = [UIColor whiteColor];
     title.textAlignment = NSTextAlignmentCenter;
     title.translatesAutoresizingMaskIntoConstraints = NO;
@@ -70,7 +70,7 @@
     
     UILabel *desc = [[UILabel alloc] init];
     desc.text = @"Tap to recharge your balance";
-    desc.font = [LOLOFonts caption];
+    desc.font = [LifeFonts caption];
     desc.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
     desc.textAlignment = NSTextAlignmentCenter;
     desc.translatesAutoresizingMaskIntoConstraints = NO;
@@ -80,7 +80,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [LOLOColors background];
+    self.tableView.backgroundColor = [LifeColors background];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
@@ -134,8 +134,8 @@
         
         UIView *bg = [[UIView alloc] init];
         bg.backgroundColor = [UIColor whiteColor];
-        bg.layer.cornerRadius = [LOLOCornerRadius standard];
-        bg.layer.borderColor = [LOLOColors border].CGColor;
+        bg.layer.cornerRadius = [LifeCornerRadius standard];
+        bg.layer.borderColor = [LifeColors border].CGColor;
         bg.layer.borderWidth = 1;
         bg.translatesAutoresizingMaskIntoConstraints = NO;
         [cell.contentView addSubview:bg];
@@ -143,23 +143,23 @@
         UILabel *amount = [[UILabel alloc] init];
         amount.tag = 101;
         amount.font = [UIFont systemFontOfSize:18 weight:UIFontWeightBold];
-        amount.textColor = [LOLOColors textPrimary];
+        amount.textColor = [LifeColors textPrimary];
         amount.translatesAutoresizingMaskIntoConstraints = NO;
         [bg addSubview:amount];
         
         UILabel *cost = [[UILabel alloc] init];
         cost.tag = 102;
-        cost.font = [LOLOFonts body];
-        cost.textColor = [LOLOColors primary];
+        cost.font = [LifeFonts body];
+        cost.textColor = [LifeColors primary];
         cost.translatesAutoresizingMaskIntoConstraints = NO;
         [bg addSubview:cost];
         
         UIButton *action = [UIButton buttonWithType:UIButtonTypeSystem];
         action.tag = 103;
-        action.backgroundColor = [LOLOColors primary];
+        action.backgroundColor = [LifeColors primary];
         [action setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        action.titleLabel.font = [LOLOFonts bodyBold];
-        action.layer.cornerRadius = [LOLOCornerRadius standard];
+        action.titleLabel.font = [LifeFonts bodyBold];
+        action.layer.cornerRadius = [LifeCornerRadius standard];
         action.translatesAutoresizingMaskIntoConstraints = NO;
         [bg addSubview:action];
         
@@ -184,7 +184,7 @@
     }
     
     SKProduct *product = self.products[indexPath.row];
-    NSInteger coins = [[LoloDataConnector defaultConnector] coinsForProductIdentifier:product.productIdentifier];
+    NSInteger coins = [[LifeDataConnector defaultConnector] coinsForProductIdentifier:product.productIdentifier];
     
     UILabel *lbl1 = [cell.contentView viewWithTag:101];
     lbl1.text = [NSString stringWithFormat:@"%ld coins", (long)coins];
@@ -208,11 +208,11 @@
     NSInteger idx = sender.tag - 200;
     if (idx >= 0 && idx < self.products.count) {
         SKProduct *product = self.products[idx];
-        [[LoloDataConnector defaultConnector] purchaseProduct:product];
+        [[LifeDataConnector defaultConnector] purchaseProduct:product];
     }
 }
 
-#pragma mark - LoloDataConnectorDelegate
+#pragma mark - LifeDataConnectorDelegate
 
 - (void)connectorDidLoadProducts:(NSArray<SKProduct *> *)products {
     [self.activityIndicator stopAnimating];

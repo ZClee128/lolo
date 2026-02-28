@@ -19,9 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger followingCount;
 
 // Sport stats
-@property (nonatomic, assign) double totalDistance; // in km
-@property (nonatomic, assign) NSInteger totalCalories;
-@property (nonatomic, assign) NSInteger totalWorkouts;
+@property (nonatomic, assign) double totalViews; // in km
+@property (nonatomic, assign) NSInteger totalShares;
+@property (nonatomic, assign) NSInteger totalTips;
 
 // User blocking and moderation (App Store Guideline 1.2)
 @property (nonatomic, copy, nullable) NSArray<NSString *> *blockedUserIds;
@@ -36,9 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
                        bio:(NSString *)bio
             followersCount:(NSInteger)followersCount
             followingCount:(NSInteger)followingCount
-             totalDistance:(double)totalDistance
-             totalCalories:(NSInteger)totalCalories
-             totalWorkouts:(NSInteger)totalWorkouts
+             totalViews:(double)totalViews
+             totalShares:(NSInteger)totalShares
+             totalTips:(NSInteger)totalTips
               coinsBalance:(NSInteger)coinsBalance;
 
 @end

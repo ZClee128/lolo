@@ -9,7 +9,7 @@
 #import "DataService.h"
 #import "Constants.h"
 #import "User.h"
-#import "StringObfuscation.h"
+
 
 @interface SettingsViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
@@ -21,7 +21,7 @@
     [super viewDidLoad];
     
     self.title = @"Settings";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     
     // Add close button
     UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:@"Close"
@@ -37,7 +37,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleInsetGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.backgroundColor = [LOLOColors background];
+    self.tableView.backgroundColor = [LifeColors background];
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.tableView];
 }
@@ -66,7 +66,7 @@
     if (indexPath.section == 0 && indexPath.row == 0) {
         cell.textLabel.text = @"Delete Account";
         cell.textLabel.textColor = [UIColor systemRedColor];
-        cell.textLabel.font = [LOLOFonts body];
+        cell.textLabel.font = [LifeFonts body];
     }
     
     return cell;
@@ -117,7 +117,7 @@
     // Dismiss settings
     [self dismissViewControllerAnimated:YES completion:^{
         // Notify app delegate to reset to terms screen
-        [[NSNotificationCenter defaultCenter] postNotificationName:[StringObfuscation notificationNameAccountDeleted] object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"AccountDeleted" object:nil];
     }];
 }
 

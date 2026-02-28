@@ -1,5 +1,5 @@
 //
-//  LoloWalletDetailView.h
+//  PremiumSubscriptionView.h
 //  lolo
 //
 //  Created on 2026/2/11.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LoloWalletDetailView : UIViewController
+@interface PremiumSubscriptionView : UIViewController
 
 @end
 

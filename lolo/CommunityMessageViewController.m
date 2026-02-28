@@ -1,5 +1,5 @@
 //
-//  MVC.m (Updated with MessageCell)
+//  CommunityMessageViewController.m (Updated with MessageCell)
 //  lolo
 //
 //  Created on 2026/2/3.
@@ -12,20 +12,20 @@
 #import "User.h"
 #import "Views/IM/ChatViewController.h"
 
-@interface MVC () <UITableViewDelegate, UITableViewDataSource>
+@interface CommunityMessageViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray<User *> *users;
 @property (nonatomic, strong) NSArray<NSString *> *messages;
 @property (nonatomic, strong) NSArray<NSString *> *times;
 @end
 
-@implementation MVC
+@implementation CommunityMessageViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"Messages";
-    self.view.backgroundColor = [LOLOColors background];
+    self.view.backgroundColor = [LifeColors background];
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     
     // Sample data

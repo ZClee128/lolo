@@ -27,7 +27,7 @@
 }
 
 - (void)setupUI {
-    CGFloat padding = [LOLOSpacing medium];
+    CGFloat padding = [LifeSpacing medium];
     
     // Avatar
     self.avatarImageView = [[UIImageView alloc] init];
@@ -39,22 +39,22 @@
     
     // Name
     self.nameLabel = [[UILabel alloc] init];
-    self.nameLabel.font = [LOLOFonts bodyBold];
-    self.nameLabel.textColor = [LOLOColors textPrimary];
+    self.nameLabel.font = [LifeFonts bodyBold];
+    self.nameLabel.textColor = [LifeColors textPrimary];
     self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.nameLabel];
     
     // Message preview
     self.messageLabel = [[UILabel alloc] init];
-    self.messageLabel.font = [LOLOFonts body];
-    self.messageLabel.textColor = [LOLOColors textSecondary];
+    self.messageLabel.font = [LifeFonts body];
+    self.messageLabel.textColor = [LifeColors textSecondary];
     self.messageLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.messageLabel];
     
     // Time
     self.timeLabel = [[UILabel alloc] init];
-    self.timeLabel.font = [LOLOFonts caption];
-    self.timeLabel.textColor = [LOLOColors textSecondary];
+    self.timeLabel.font = [LifeFonts caption];
+    self.timeLabel.textColor = [LifeColors textSecondary];
     self.timeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.timeLabel];
     

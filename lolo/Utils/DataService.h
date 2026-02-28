@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-@class User, Post, Activity, Venue, Conversation, Message, SportRecord;
+@class User, Post, Activity, Venue, Conversation, Message, HabitRecord;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)getLastMessageTimeForUser:(NSString *)userId;
 - (NSString *)getLastMessageForUser:(NSString *)userId;
 - (NSString *)getLastMessageTimeForUser:(NSString *)userId;
-- (NSArray<SportRecord *> *)getSportRecords;
+- (NSArray<HabitRecord *> *)getSportRecords;
 - (void)blockUser:(NSString *)userId;
 - (BOOL)isUserBlocked:(NSString *)userId;
 
@@ -41,9 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)addCoins:(NSInteger)amount;
 - (BOOL)deductCoins:(NSInteger)amount;
 - (BOOL)hasEnoughCoins:(NSInteger)amount;
+- (BOOL)tipPost:(Post *)post;
 
 // Pin management
-- (BOOL)pinPost:(Post *)post duration:(NSTimeInterval)duration;
+- (BOOL)pinPost:(Post *)post savesCount:(NSTimeInterval)savesCount;
 - (void)unpinPost:(Post *)post;
 - (void)checkAndExpirePinnedPosts;
 - (NSArray<Post *> *)sortPostsWithPinnedFirst:(NSArray<Post *> *)posts;

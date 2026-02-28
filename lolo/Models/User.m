@@ -15,9 +15,9 @@
                        bio:(NSString *)bio
             followersCount:(NSInteger)followersCount
             followingCount:(NSInteger)followingCount
-             totalDistance:(double)totalDistance
-             totalCalories:(NSInteger)totalCalories
-             totalWorkouts:(NSInteger)totalWorkouts
+             totalViews:(double)totalViews
+             totalShares:(NSInteger)totalShares
+             totalTips:(NSInteger)totalTips
               coinsBalance:(NSInteger)coinsBalance {
     self = [super init];
     if (self) {
@@ -27,9 +27,9 @@
         _bio = [bio copy];
         _followersCount = followersCount;
         _followingCount = followingCount;
-        _totalDistance = totalDistance;
-        _totalCalories = totalCalories;
-        _totalWorkouts = totalWorkouts;
+        _totalViews = totalViews;
+        _totalShares = totalShares;
+        _totalTips = totalTips;
         _coinsBalance = coinsBalance;
     }
     return self;
